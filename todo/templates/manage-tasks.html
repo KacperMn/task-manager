@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Tasks{% endblock %}
+
+{% block heading %}<h1>Manage Tasks</h1>{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Tasks</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <!-- Form for Adding a New Task -->
+        <tr>
+            <form method="post" action="{% url 'add_task' %}">
+                {% csrf_token %}
+                <td style="width: 30%;">
+                    <input type="text" name="title" placeholder="Task Title" style="width: 100%; padding: 5px;">
+                </td>
+                <td style="width: 40%;">
+                    <input name="description" placeholder="Task Description" style="width: 100%; padding: 5px;">
+                </td>
+                <td style="width: 20%;">
+                    <select name="category" required style="width: 100%; padding: 5px;">
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.title }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td style="width: 10%;">
+                    <button type="submit" style="width: 100%;">Add</button>
+                </td>
+            </form>
+        </tr>
+
+        <!-- List of Tasks -->
+        {% for task in tasks %}
+        <tr>
+            <td style="width: 30%; padding: 5px;">{{ task.title }}</td>
+            <td style="width: 40%; padding: 5px;">{{ task.description }}</td>
+            <td style="width: 20%; padding: 5px;">{{ task.category.title }}</td>
+            <td style="width: 10%; padding: 5px; text-align: center;">
+                <a href="{% url 'toggle_task_active' task.id %}">
+                    <button class="toggle-btn {% if task.is_active %}active{% else %}inactive{% endif %}">
+                        ✓
+                    </button>
+                </a>
+                <a href="{% url 'delete_task' task.id %}">
+                    <button style="background-color: red; color: white;">Delete</button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

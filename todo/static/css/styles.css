@@ -1,0 +1,221 @@
+/* Root Variables */
+:root {
+    --background-color: #2c2c2c; /* Graphite grey background */
+    --header-footer-color: #1f1f1f; /* Darker grey for header and footer */
+    --text-color: #ffffff; /* White text */
+    --form-background-color: #ffffff; /* White background for forms */
+    --form-text-color: #2c2c2c; /* Graphite grey text for forms */
+    --form-border-color: #555; /* Subtle border color */
+    --button-background-color: #ff6600; /* Orange contrast color */
+    --button-hover-color: #e65c00; /* Slightly darker orange on hover */
+    --link-color: #ff6600; /* Orange for links */
+    --link-hover-decoration: underline; /* Link hover decoration */
+    --list-item-background-color: #ffffff; /* Slightly lighter grey for list items */
+    --list-item-text-color: #2c2c2c; /* Graphite grey text for list items */
+    --font-family: Arial, sans-serif; /* Font family */
+    --font-size: 17px; /* Default font size */
+    --button-padding: 10px 15px; /* Button padding */
+    --border-radius: 5px; /* Border radius for buttons and forms */
+}
+
+/* General Styles */
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--header-footer-color);
+    color: var(--text-color);
+    padding: 10px 20px;
+    text-align: center;
+    position: relative;
+}
+
+footer {
+    background-color: var(--header-footer-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+main {
+    padding: 20px;
+    margin-bottom: 50px; /* To avoid overlap with footer */
+}
+
+/* Buttons */
+button {
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    border: none;
+    padding: var(--button-padding);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size);
+}
+
+button:hover {
+    background-color: var(--button-hover-color);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Back to Home Button */
+.back-to-index-btn {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    border: none;
+    padding: var(--button-padding);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size);
+}
+
+.back-to-index-btn:hover {
+    background-color: var(--button-hover-color);
+}
+
+/* Toggle Button Styles */
+.toggle-btn {
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    border: none;
+    padding: var(--button-padding);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.toggle-btn.active {
+    background-color: var(--button-background-color); /* Orange for active */
+    color: var(--text-color);
+}
+
+.toggle-btn.inactive {
+    background-color: #555; /* Gray for inactive */
+    color: #ccc; /* Light gray text for inactive */
+}
+
+.toggle-btn.inactive:hover {
+    background-color: #666; /* Slightly darker gray on hover */
+}
+
+.toggle-btn.active:hover {
+    background-color: var(--button-hover-color); /* Darker orange on hover */
+}
+
+/* Forms */
+form {
+    background-color: var(--form-background-color); /* White background */
+    color: var(--form-text-color); /* Graphite grey text */
+    padding: 15px;
+    border: 1px solid var(--form-border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+form div {
+    margin-bottom: 10px;
+}
+
+form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--form-text-color); /* Graphite grey for form labels */
+}
+
+form input, form textarea, form select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--form-border-color);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+    background-color: var(--form-background-color); /* White background for inputs */
+    color: var(--form-text-color); /* Graphite grey text for inputs */
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table td {
+    border: 1px solid var(--form-border-color);
+    padding: 10px;
+}
+
+table tr:first-child td {
+    border: none; /* Remove borders for the form row */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color); /* White text for headings */
+}
+
+/* Lists */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: var(--list-item-background-color);
+    color: var(--list-item-text-color);
+    font-size: var(--font-size);
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid var(--form-border-color);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+ul li a {
+    /* margin-left: 10px;*/
+    color: var(--link-color);
+    font-size: var(--font-size);
+}
+
+ul li a:hover {
+    text-decoration: var(--link-hover-decoration);
+}
+
+/* Create Task Button */
+.manage-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    border: none;
+    padding: var(--button-padding);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size);
+}
+
+.create-task-btn:hover {
+    background-color: var(--button-hover-color);
+}

@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        {% block heading %}<h1>TO DO LIST</h1>{% endblock %}
+        <!-- Button to go to the index page -->
+        {% if request.path != '/' %}
+        <a href="{% url 'index' %}">
+            <button class="back-to-index-btn">TODO list</button>
+        </a>
+        {% endif %}
+        {% if request.path != '/manage-tasks/' %}
+        <div>
+            <a href="{% url 'manage_tasks' %}">
+                <button class="manage-btn">Manage Tasks</button>
+            </a>
+        </div>
+        {% endif %}
+        {% if request.path != '/manage-categories/' %}
+        <div>
+            <a href="{% url 'manage_categories' %}">
+                <button class="manage-btn">Manage Categories</button>
+            </a>
+        </div>
+        {% endif %}
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 Task Manager. All rights reserved.</p>
+    </footer>
+</body>
+</html>

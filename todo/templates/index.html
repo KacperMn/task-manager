@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}To Do List{% endblock %}
+
+{% block heading %}<h1>TO DO</h1>{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; margin-top: 50px;">
+    <div style="width: 45%;">
+        <h2>Active Tasks</h2>
+        <ul>
+            {% for task in tasks %}
+                {% if task.is_active %}
+                    <li>
+                        {{ task }}
+                        <a href="{% url 'toggle_task_active' task.id %}">
+                            <button class="toggle-btn active">
+                                ✓
+                            </button>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    <div style="width: 45%;">
+        <h2>Inactive Tasks</h2>
+        <ul>
+            {% for task in tasks %}
+                {% if not task.is_active %}
+                    <li>
+                        {{ task }}
+                        <a href="{% url 'toggle_task_active' task.id %}">
+                            <button class="toggle-btn inactive">
+                                ✓
+                            </button>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
