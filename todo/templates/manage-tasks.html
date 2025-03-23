@@ -5,47 +5,49 @@
 {% block heading %}<h1>Manage Tasks</h1>{% endblock %}
 
 {% block content %}
-<div>
+<div class="tasks-container">
     <h2>Tasks</h2>
-    <table style="width: 100%; border-collapse: collapse;">
+    <table class="tasks-table">
         <!-- Form for Adding a New Task -->
-        <tr>
+        <tr class="task-row">
             <form method="post" action="{% url 'add_task' %}">
                 {% csrf_token %}
-                <td style="width: 30%;">
-                    <input type="text" name="title" placeholder="Task Title" style="width: 100%; padding: 5px;">
+                <td class="task-cell">
+                    <input type="text" name="title" placeholder="Task Title" class="task-input" required>
                 </td>
-                <td style="width: 40%;">
-                    <input name="description" placeholder="Task Description" style="width: 100%; padding: 5px;">
+                <td class="task-cell">
+                    <input type="text" name="description" placeholder="Task Description" class="task-input" required>
                 </td>
-                <td style="width: 20%;">
-                    <select name="category" required style="width: 100%; padding: 5px;">
+                <td class="task-cell">
+                    <select name="category" class="task-select" required>
                         {% for category in categories %}
                             <option value="{{ category.id }}">{{ category.title }}</option>
                         {% endfor %}
                     </select>
                 </td>
-                <td style="width: 10%;">
-                    <button type="submit" style="width: 100%;">Add</button>
+                <td class="task-cell task-actions">
+                    <button type="submit" class="task-btn add-btn">Add</button>
                 </td>
             </form>
         </tr>
 
         <!-- List of Tasks -->
         {% for task in tasks %}
-        <tr>
-            <td style="width: 30%; padding: 5px;">{{ task.title }}</td>
-            <td style="width: 40%; padding: 5px;">{{ task.description }}</td>
-            <td style="width: 20%; padding: 5px;">{{ task.category.title }}</td>
-            <td style="width: 10%; padding: 5px; text-align: center;">
-                <a href="{% url 'toggle_task_active' task.id %}">
-                    <button class="toggle-btn {% if task.is_active %}active{% else %}inactive{% endif %}">
+        <tr class="task-row">
+            <td class="task-cell">{{ task.title }}</td>
+            <td class="task-cell">{{ task.description }}</td>
+            <td class="task-cell">{{ task.category.title }}</td>
+            <td class="task-cell task-actions">
+                <form method="post" action="{% url 'toggle_task_active' task.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button class="task-btn {% if task.is_active %}active{% else %}inactive{% endif %}">
                         ✓
                     </button>
-                </a>
-                <a href="{% url 'delete_task' task.id %}">
-                    <button style="background-color: red; color: white;">Delete</button>
-                </a>
+                </form>
+                <form method="post" action="{% url 'delete_task' task.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button class="task-btn delete-btn">Delete</button>
+                </form>
             </td>
         </tr>
         {% endfor %}

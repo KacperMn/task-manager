@@ -5,40 +5,47 @@
 {% block heading %}<h1>TO DO</h1>{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; margin-top: 50px;">
-    <div style="width: 45%;">
+<div class="tasks-container">
+    <!-- Active Tasks Section -->
+    <div class="active-tasks">
         <h2>Active Tasks</h2>
-        <ul>
+        <ul class="task-list">
             {% for task in tasks %}
                 {% if task.is_active %}
                     <li>
-                        {{ task }}
-                        <a href="{% url 'toggle_task_active' task.id %}">
-                            <button class="toggle-btn active">
-                                ✓
+                        <form method="post" action="{% url 'toggle_task_active' task.id %}">
+                            {% csrf_token %}
+                            <button class="list-btn active">
+                                {{ task }}
+                                <span class="list-btn-icon">✓</span>
                             </button>
-                        </a>
+                        </form>
                     </li>
                 {% endif %}
             {% endfor %}
         </ul>
     </div>
-    <div style="width: 45%;">
-        <h2>Inactive Tasks</h2>
-        <ul>
-            {% for task in tasks %}
-                {% if not task.is_active %}
-                    <li>
-                        {{ task }}
-                        <a href="{% url 'toggle_task_active' task.id %}">
-                            <button class="toggle-btn inactive">
-                                ✓
-                            </button>
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+
+    <!-- Suggested Tasks Section -->
+    <div class="inactive-tasks">
+        <h2>Suggested Tasks</h2>
+        <div class="inactive-tasks-scroll">
+            <ul class="task-list-horizontal">
+                {% for task in tasks %}
+                    {% if not task.is_active %}
+                        <li>
+                            <form method="post" action="{% url 'toggle_task_active' task.id %}">
+                                {% csrf_token %}
+                                <button class="list-btn inactive">
+                                    {{ task }}
+                                    <span class="list-btn-icon">✓</span>
+                                </button>
+                            </form>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}

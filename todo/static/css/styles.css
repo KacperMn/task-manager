@@ -1,43 +1,60 @@
-/* Root Variables */
+/* ========================= */
+/*        Root Variables     */
+/* ========================= */
 :root {
-    --background-color: #2c2c2c; /* Graphite grey background */
-    --header-footer-color: #1f1f1f; /* Darker grey for header and footer */
-    --text-color: #ffffff; /* White text */
-    --form-background-color: #ffffff; /* White background for forms */
-    --form-text-color: #2c2c2c; /* Graphite grey text for forms */
-    --form-border-color: #555; /* Subtle border color */
-    --button-background-color: #ff6600; /* Orange contrast color */
-    --button-hover-color: #e65c00; /* Slightly darker orange on hover */
-    --link-color: #ff6600; /* Orange for links */
-    --link-hover-decoration: underline; /* Link hover decoration */
-    --list-item-background-color: #ffffff; /* Slightly lighter grey for list items */
-    --list-item-text-color: #2c2c2c; /* Graphite grey text for list items */
-    --font-family: Arial, sans-serif; /* Font family */
-    --font-size: 17px; /* Default font size */
-    --button-padding: 10px 15px; /* Button padding */
-    --border-radius: 5px; /* Border radius for buttons and forms */
+    /* Global Colors */
+    --color-background: #2c2c2c; /* Dark background */
+    --color-header-footer: #1f1f1f; /* Header and footer background */
+    --color-text: #ffffff; /* White text */
+    --color-form-background: #ffffff; /* Form background */
+    --color-form-text: #2c2c2c; /* Form text */
+    --color-form-border: #555; /* Form border */
+    --color-button-primary: #ff6600; /* Primary button (orange) */
+    --color-button-primary-hover: #e65c00; /* Primary button hover */
+    --color-button-active: #ffffff; /* Active button */
+    --color-button-inactive: #818181; /* Inactive button */
+    --color-list-item-background: #ffffff; /* List item background */
+    --color-list-item-text: #2c2c2c; /* List item text */
+    --color-link: #ff6600; /* Link color */
+    --color-link-hover: underline; /* Link hover decoration */
+
+    /* Global Fonts */
+    --font-family: Arial, sans-serif; /* Default font family */
+    --font-size-default: 17px; /* Default font size */
+
+    /* Global Spacing */
+    --spacing-padding: 10px 15px; /* Default padding */
+    --spacing-border-radius: 5px; /* Default border radius */
+
+    /* Shadows */
+    --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-/* General Styles */
+/* ========================= */
+/*        Global Styles      */
+/* ========================= */
 body {
     font-family: var(--font-family);
     margin: 0;
     padding: 0;
-    background-color: var(--background-color);
-    color: var(--text-color);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full height of the viewport */
 }
 
 header {
-    background-color: var(--header-footer-color);
-    color: var(--text-color);
+    background-color: var(--color-header-footer);
+    color: var(--color-text);
     padding: 10px 20px;
     text-align: center;
     position: relative;
 }
 
 footer {
-    background-color: var(--header-footer-color);
-    color: var(--text-color);
+    background-color: var(--color-header-footer);
+    color: var(--color-text);
     text-align: center;
     padding: 10px 0;
     position: fixed;
@@ -48,174 +65,278 @@ footer {
 main {
     padding: 20px;
     margin-bottom: 50px; /* To avoid overlap with footer */
+    flex: 1; /* Allow the main content to grow and take available space */
+    display: flex;
+    flex-direction: column;
 }
 
-/* Buttons */
-button {
-    background-color: var(--button-background-color);
-    color: var(--text-color);
-    border: none;
-    padding: var(--button-padding);
-    cursor: pointer;
-    border-radius: var(--border-radius);
-    font-size: var(--font-size);
+/* ========================= */
+/*        Navbar Styles      */
+/* ========================= */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space between left, center, and right sections */
+    align-items: center;
+    background-color: var(--color-header-footer);
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--color-form-border);
 }
 
-button:hover {
-    background-color: var(--button-hover-color);
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
 }
 
-a {
+.navbar-right {
+    gap: 15px; /* Space between buttons */
+}
+
+.navbar-center {
+    flex-grow: 1; /* Allow the center section to take up remaining space */
+    text-align: center; /* Center the heading text */
+}
+
+.navbar-heading {
+    margin: 0;
+    font-size: 24px;
+    color: var(--color-text);
+}
+
+.nav-link {
     text-decoration: none;
     color: inherit;
 }
 
-/* Back to Home Button */
-.back-to-index-btn {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    background-color: var(--button-background-color);
-    color: var(--text-color);
+.nav-btn {
+    background-color: var(--color-button-primary);
+    color: var(--color-text);
     border: none;
-    padding: var(--button-padding);
+    padding: var(--spacing-padding);
     cursor: pointer;
-    border-radius: var(--border-radius);
-    font-size: var(--font-size);
+    border-radius: var(--spacing-border-radius);
+    font-size: var(--font-size-default);
 }
 
-.back-to-index-btn:hover {
-    background-color: var(--button-hover-color);
+.nav-btn:hover {
+    background-color: var(--color-button-primary-hover);
 }
 
-/* Toggle Button Styles */
-.toggle-btn {
-    background-color: var(--button-background-color);
-    color: var(--text-color);
-    border: none;
-    padding: var(--button-padding);
-    cursor: pointer;
-    border-radius: var(--border-radius);
-    font-size: var(--font-size);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
+/* ========================= */
+/*        Task List Styles   */
+/* ========================= */
 
-.toggle-btn.active {
-    background-color: var(--button-background-color); /* Orange for active */
-    color: var(--text-color);
-}
-
-.toggle-btn.inactive {
-    background-color: #555; /* Gray for inactive */
-    color: #ccc; /* Light gray text for inactive */
-}
-
-.toggle-btn.inactive:hover {
-    background-color: #666; /* Slightly darker gray on hover */
-}
-
-.toggle-btn.active:hover {
-    background-color: var(--button-hover-color); /* Darker orange on hover */
-}
-
-/* Forms */
-form {
-    background-color: var(--form-background-color); /* White background */
-    color: var(--form-text-color); /* Graphite grey text */
-    padding: 15px;
-    border: 1px solid var(--form-border-color);
-    border-radius: var(--border-radius);
-    margin-bottom: 20px;
-}
-
-form div {
-    margin-bottom: 10px;
-}
-
-form label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: var(--form-text-color); /* Graphite grey for form labels */
-}
-
-form input, form textarea, form select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--form-border-color);
-    border-radius: var(--border-radius);
-    box-sizing: border-box;
-    background-color: var(--form-background-color); /* White background for inputs */
-    color: var(--form-text-color); /* Graphite grey text for inputs */
-}
-
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
+/* Tasks Container */
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Allow the container to grow and take available space */
     margin-top: 20px;
 }
 
-table td {
-    border: 1px solid var(--form-border-color);
-    padding: 10px;
+/* Active Tasks Section */
+.active-tasks {
+    margin-bottom: 20px;
+    flex: 1; /* Allow active tasks to take up the remaining space */
 }
 
-table tr:first-child td {
-    border: none; /* Remove borders for the form row */
-}
-
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-    color: var(--text-color); /* White text for headings */
-}
-
-/* Lists */
-ul {
+.task-list {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
-ul li {
-    background-color: var(--list-item-background-color);
-    color: var(--list-item-text-color);
-    font-size: var(--font-size);
-    margin: 5px 0;
-    padding: 10px;
-    border: 1px solid var(--form-border-color);
-    border-radius: var(--border-radius);
+.task-list li {
+    margin-bottom: 10px;
+}
+
+/* Suggested Tasks Section */
+.inactive-tasks-scroll {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent wrapping of list items */
+    padding: 10px 0;
+    border-top: 1px solid var(--color-form-border);
+    border-bottom: 1px solid var(--color-form-border);
+    background-color: var(--color-background);
+}
+
+.task-list-horizontal {
+    display: inline-flex;
+    gap: 10px; /* Space between items */
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.task-list-horizontal li {
+    flex-shrink: 0; /* Prevent shrinking */
+    width: auto; /* Adjust width to content */
+}
+
+/* ========================= */
+/*        List Button Styles */
+/* ========================= */
+
+/* General List Button Styles */
+.list-btn {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%; /* Full width of the parent container */
+    padding: var(--spacing-padding); /* Consistent padding */
+    border: 1px solid var(--color-form-border); /* Border for separation */
+    border-radius: var(--spacing-border-radius); /* Rounded corners */
+    background-color: var(--color-list-item-background); /* Default background */
+    color: var(--color-list-item-text); /* Default text color */
+    font-size: var(--font-size-default); /* Consistent font size */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    text-align: left; /* Align text to the left */
+    box-shadow: var(--shadow-light); /* Subtle shadow for depth */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth hover and click effects */
 }
 
-ul li a {
-    /* margin-left: 10px;*/
-    color: var(--link-color);
-    font-size: var(--font-size);
+.list-btn:hover {
+    background-color: var(--color-button-primary-hover); /* Highlight background on hover */
+    transform: scale(1.02); /* Slight zoom effect */
 }
 
-ul li a:hover {
-    text-decoration: var(--link-hover-decoration);
+.list-btn:active {
+    transform: scale(0.98); /* Slight shrink effect on click */
 }
 
-/* Create Task Button */
-.manage-btn {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    background-color: var(--button-background-color);
-    color: var(--text-color);
+/* List Button Icon */
+.list-btn-icon {
+    font-size: 18px; /* Icon size */
+    color: var(--color-form-text);
+}
+
+/* Active List Button Styles */
+.list-btn.active {
+    background-color: var(--color-button-active); /* White background for active tasks */
+    color: var(--color-form-text); /* Dark text for active tasks */
+}
+
+.list-btn.active .list-btn-icon {
+    color: var(--color-form-text); /* Dark icon for active tasks */
+}
+
+/* Inactive List Button Styles */
+.list-btn.inactive {
+    background-color: var(--color-button-inactive); /* Gray background for inactive tasks */
+    color: #ccc; /* Light gray text for inactive tasks */
+}
+
+.list-btn.inactive .list-btn-icon {
+    color: #ccc; /* Light gray icon for inactive tasks */
+    margin-left: 10px; /* Add space between icon and text */
+}
+
+/* ========================= */
+/*        Manage Tasks       */
+/* ========================= */
+
+/* Tasks Table */
+.tasks-table {
+    width: 100%;
+    border-collapse: collapse; /* Remove gaps between table cells */
+    margin-top: 20px;
+}
+
+.task-row {
+    border-bottom: 1px solid var(--color-form-border); /* Add a border between rows */
+}
+
+.task-cell {
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+    background-color: var(--color-background); /* Match the page background */
+    color: var(--color-text); /* Text color */
+}
+
+/* Input Fields */
+.task-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-form-border); /* Border for contrast */
+    border-radius: var(--spacing-border-radius); /* Rounded corners */
+    background-color: var(--color-background); /* Match the page background */
+    color: var(--color-text); /* Text color */
+    font-size: var(--font-size-default);
+}
+
+.task-input:focus {
+    outline: none;
+    border-color: var(--color-button-primary); /* Highlight border on focus */
+}
+
+/* Select Dropdown */
+.task-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-form-border); /* Border for contrast */
+    border-radius: var(--spacing-border-radius); /* Rounded corners */
+    background-color: var(--color-background); /* Match the page background */
+    color: var(--color-text); /* Text color */
+    font-size: var(--font-size-default);
+}
+
+.task-select:focus {
+    outline: none;
+    border-color: var(--color-button-primary); /* Highlight border on focus */
+}
+
+/* Buttons */
+.task-btn {
+    padding: 8px 12px;
     border: none;
-    padding: var(--button-padding);
+    border-radius: var(--spacing-border-radius);
+    font-size: var(--font-size-default);
     cursor: pointer;
-    border-radius: var(--border-radius);
-    font-size: var(--font-size);
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.create-task-btn:hover {
-    background-color: var(--button-hover-color);
+.task-btn:hover {
+    transform: scale(1.02); /* Slight zoom effect */
+}
+
+.task-btn:active {
+    transform: scale(0.98); /* Slight shrink effect */
+}
+
+/* Add Button */
+.add-btn {
+    background-color: var(--color-button-primary);
+    color: var(--color-text);
+}
+
+.add-btn:hover {
+    background-color: var(--color-button-primary-hover);
+}
+
+/* Active/Inactive Buttons */
+.task-btn.active {
+    background-color: var(--color-button-primary);
+    color: var(--color-text);
+}
+
+.task-btn.inactive {
+    background-color: var(--color-button-inactive);
+    color: #ccc;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: red;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
+
+/* Task Actions */
+.task-actions {
+    text-align: center;
+    white-space: nowrap; /* Prevent buttons from wrapping */
 }

@@ -9,27 +9,27 @@
 </head>
 <body>
     <header>
-        {% block heading %}<h1>TO DO LIST</h1>{% endblock %}
-        <!-- Button to go to the index page -->
-        {% if request.path != '/' %}
-        <a href="{% url 'index' %}">
-            <button class="back-to-index-btn">TODO list</button>
-        </a>
-        {% endif %}
-        {% if request.path != '/manage-tasks/' %}
-        <div>
-            <a href="{% url 'manage_tasks' %}">
-                <button class="manage-btn">Manage Tasks</button>
-            </a>
-        </div>
-        {% endif %}
-        {% if request.path != '/manage-categories/' %}
-        <div>
-            <a href="{% url 'manage_categories' %}">
-                <button class="manage-btn">Manage Categories</button>
-            </a>
-        </div>
-        {% endif %}
+        <nav class="navbar">
+            <!-- Link to the index page (left-aligned) -->
+            <div class="navbar-left">
+                <a href="{% url 'index' %}" class="nav-link">
+                    <button class="nav-btn">TODO List</button>
+                </a>
+            </div>
+            <!-- Heading (centered) -->
+            <div class="navbar-center">
+                {% block heading %}<h1 class="navbar-heading">Task Manager</h1>{% endblock %}
+            </div>
+            <!-- Links to other pages (right-aligned) -->
+            <div class="navbar-right">
+                <a href="{% url 'manage_tasks' %}" class="nav-link">
+                    <button class="nav-btn">Manage Tasks</button>
+                </a>
+                <a href="{% url 'manage_categories' %}" class="nav-link">
+                    <button class="nav-btn">Manage Categories</button>
+                </a>
+            </div>
+        </nav>
     </header>
     <main>
         {% block content %}
