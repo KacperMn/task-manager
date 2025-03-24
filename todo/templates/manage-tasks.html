@@ -10,7 +10,7 @@
     <table class="tasks-table">
         <!-- Form for Adding a New Task -->
         <tr class="task-row">
-            <form method="post" action="{% url 'add_task' %}">
+            <form method="post" action="{% url 'tasks:add_task' %}">
                 {% csrf_token %}
                 <td class="task-cell">
                     <input type="text" name="title" placeholder="Task Title" class="task-input" required>
@@ -38,13 +38,13 @@
             <td class="task-cell">{{ task.description }}</td>
             <td class="task-cell">{{ task.category.title }}</td>
             <td class="task-cell task-actions">
-                <form method="post" action="{% url 'toggle_task_active' task.id %}" style="display: inline;">
+                <form method="post" action="{% url 'tasks:toggle_task_active' task.id %}" style="display: inline;">
                     {% csrf_token %}
                     <button class="task-btn {% if task.is_active %}active{% else %}inactive{% endif %}">
                         ✓
                     </button>
                 </form>
-                <form method="post" action="{% url 'delete_task' task.id %}" style="display: inline;">
+                <form method="post" action="{% url 'tasks:delete_task' task.id %}" style="display: inline;">
                     {% csrf_token %}
                     <button class="task-btn delete-btn">Delete</button>
                 </form>

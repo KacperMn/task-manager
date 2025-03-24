@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}To Do List{% endblock %}
 
@@ -13,9 +14,9 @@
             {% for task in tasks %}
                 {% if task.is_active %}
                     <li>
-                        <form method="post" action="{% url 'toggle_task_active' task.id %}">
+                        <form method="post" class="toggle-task-form" data-task-id="{{ task.id }}">
                             {% csrf_token %}
-                            <button class="list-btn active">
+                            <button type="submit" class="list-btn active">
                                 {{ task }}
                                 <span class="list-btn-icon">✓</span>
                             </button>
@@ -34,9 +35,9 @@
                 {% for task in tasks %}
                     {% if not task.is_active %}
                         <li>
-                            <form method="post" action="{% url 'toggle_task_active' task.id %}">
+                            <form method="post" class="toggle-task-form" data-task-id="{{ task.id }}">
                                 {% csrf_token %}
-                                <button class="list-btn inactive">
+                                <button type="submit" class="list-btn inactive">
                                     {{ task }}
                                     <span class="list-btn-icon">✓</span>
                                 </button>
@@ -48,4 +49,7 @@
         </div>
     </div>
 </div>
+
+<!-- Include the external JavaScript file -->
+<script src="{% static 'js/toggle_task.js' %}"></script>
 {% endblock %}

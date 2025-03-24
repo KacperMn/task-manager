@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Select Mode{% endblock %}
+
+{% block content %}
+<h2>Select Mode</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>
+        <input type="radio" name="mode" value="private" required> Private
+    </label>
+    <label>
+        <input type="radio" name="mode" value="work" required> Work
+    </label>
+    <button type="submit">Continue</button>
+</form>
+{% endblock %}

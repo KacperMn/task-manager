@@ -75,8 +75,8 @@ main {
 /* ========================= */
 .navbar {
     display: flex;
-    justify-content: space-between; /* Space between left, center, and right sections */
-    align-items: center;
+    justify-content: space-between; /* Space between left and right sections */
+    align-items: center; /* Align items vertically */
     background-color: var(--color-header-footer);
     padding: 10px 20px;
     border-bottom: 1px solid var(--color-form-border);
@@ -89,7 +89,7 @@ main {
 }
 
 .navbar-right {
-    gap: 15px; /* Space between buttons */
+    gap: 15px; /* Space between buttons and dropdown */
 }
 
 .navbar-center {
@@ -120,6 +120,103 @@ main {
 
 .nav-btn:hover {
     background-color: var(--color-button-primary-hover);
+}
+
+/* Navbar Buttons */
+.navbar-btn {
+    background-color: var(--color-button-primary); /* Primary button color */
+    color: var(--color-text); /* White text */
+    padding: var(--spacing-padding); /* Consistent padding */
+    border-radius: var(--spacing-border-radius); /* Rounded corners */
+    text-decoration: none; /* Remove underline */
+    font-size: var(--font-size-default); /* Default font size */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth hover and click effects */
+}
+
+.navbar-btn:hover {
+    background-color: var(--color-button-primary-hover); /* Hover color */
+    transform: scale(1.02); /* Slight zoom effect */
+}
+
+.navbar-btn:active {
+    transform: scale(0.98); /* Slight shrink effect */
+}
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown toggle button */
+.dropdown-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and username */
+    color: var(--color-text); /* White text */
+    font-size: var(--font-size-default);
+}
+
+/* Profile icon */
+.profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+/* Profile username */
+.profile-username {
+    font-size: var(--font-size-default);
+    color: var(--color-text);
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--color-form-background); /* White background */
+    box-shadow: var(--shadow-light); /* Subtle shadow */
+    border-radius: var(--spacing-border-radius); /* Rounded corners */
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 150px;
+}
+
+/* Dropdown menu items */
+.dropdown-menu a,
+.dropdown-menu form {
+    display: block;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: var(--color-form-text); /* Dark text */
+    cursor: pointer;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu form:hover {
+    background-color: var(--color-button-primary-hover); /* Highlight background on hover */
+    color: var(--color-text); /* White text */
+}
+
+/* Show dropdown menu on hover */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Navbar brand */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    text-decoration: underline;
 }
 
 /* ========================= */

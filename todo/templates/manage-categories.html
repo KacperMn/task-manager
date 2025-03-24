@@ -10,7 +10,7 @@
     <table style="width: 100%; border-collapse: collapse;">
         <!-- Form for Adding a New Category -->
         <tr>
-            <form method="post" action="{% url 'add_category' %}">
+            <form method="post" action="{% url 'categories:add_category' %}">
                 {% csrf_token %}
                 <td style="width: 50%;">
                     <input type="text" name="title" placeholder="Category Title" required style="width: 100%; padding: 5px;">
@@ -30,7 +30,7 @@
             <td style="width: 50%; padding: 5px;">{{ category.title }}</td>
             <td style="width: 40%; padding: 5px;">{{ category.description }}</td>
             <td style="width: 10%; padding: 5px; text-align: center;">
-                <a href="{% url 'delete_category' category.id %}">
+                <a href="{% url 'categories:delete_category' category.id %}">
                     <button style="background-color: red; color: white;">Delete</button>
                 </a>
             </td>

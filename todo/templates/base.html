@@ -10,24 +10,32 @@
 <body>
     <header>
         <nav class="navbar">
-            <!-- Link to the index page (left-aligned) -->
+            <!-- Left-aligned: Brand -->
             <div class="navbar-left">
-                <a href="{% url 'index' %}" class="nav-link">
-                    <button class="nav-btn">TODO List</button>
-                </a>
+                <a href="{% url 'tasks:todo' %}" class="navbar-brand">TODO List</a>
             </div>
-            <!-- Heading (centered) -->
-            <div class="navbar-center">
-                {% block heading %}<h1 class="navbar-heading">Task Manager</h1>{% endblock %}
-            </div>
-            <!-- Links to other pages (right-aligned) -->
+
+            <!-- Right-aligned: Navigation Links -->
             <div class="navbar-right">
-                <a href="{% url 'manage_tasks' %}" class="nav-link">
-                    <button class="nav-btn">Manage Tasks</button>
-                </a>
-                <a href="{% url 'manage_categories' %}" class="nav-link">
-                    <button class="nav-btn">Manage Categories</button>
-                </a>
+                <!-- Navigation Buttons -->
+                <a href="{% url 'tasks:manage_tasks' %}" class="navbar-btn">Manage Tasks</a>
+                <a href="{% url 'categories:manage_categories' %}" class="navbar-btn">Manage Categories</a>
+
+                <!-- Profile Dropdown -->
+                <div class="dropdown">
+                    <button class="dropdown-toggle">
+                        <img src="{% static 'images/profile-icon.png' %}" alt="Profile" class="profile-icon">
+                        <span class="profile-username">{{ user.username }}</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'user:profile' %}">View/Edit Profile</a>
+                        <a href="{% url 'user:workplace' %}">View/Edit Workplace</a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-btn">Log Out</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
