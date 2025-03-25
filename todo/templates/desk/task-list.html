@@ -35,7 +35,7 @@
                         <li>
                             <form method="post" action="{% url 'tasks_toggle' desk_slug=desk.slug task_id=task.id %}">
                                 {% csrf_token %}
-                                <button class="list-btn inactive">
+                                <button type="submit" class="list-btn inactive">
                                     {{ task }}
                                     <span class="list-btn-icon">✓</span>
                                 </button>

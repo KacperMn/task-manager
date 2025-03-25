@@ -4,33 +4,35 @@
 
 {% block content %}
 <h1>My Desks</h1>
-
-<div class="desk-list">
-    {% for desk in desks %}
-    <div class="desk-item">
-        <h2>{{ desk.name }}</h2>
-        <div class="actions">
-            <!-- Use desk.slug in URL -->
-            <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn btn-primary">Open</a>
-            <!-- Other actions -->
-            <form method="post" action="{% url 'desks_rename' desk_id=desk.id %}" class="inline">
-                {% csrf_token %}
-                <input type="text" name="new_name" placeholder="New name" required>
-                <button type="submit" class="btn btn-secondary">Rename</button>
-            </form>
-            
-            <form method="post" action="{% url 'desks_delete' desk_id=desk.id %}" class="inline">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+    {% if desks %}
+        <ul class="desks-list">
+            {% for desk in desks %}
+                <li class="desk-card">
+                    <div class="desk-card-header">{{ desk.name }}</div>
+                    <div class="desk-card-body">
+                        <div class="desk-meta">
+                            <span>{{ desk.task_set.count }} tasks</span>
+                            <span>{{ desk.category_set.count }} categories</span>
+                        </div>
+                    </div>
+                    <div class="desk-card-footer">
+                        <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="desk-action desk-action-view">View</a>
+                        <a href="{% url 'desks_rename' desk_id=desk.id %}" class="desk-action desk-action-rename">Rename</a>
+                        <a href="{% url 'desks_delete' desk_id=desk.id %}" class="desk-action desk-action-delete">Delete</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="no-desks-message">
+            <p>You don't have any desks yet.</p>
+            <a href="{% url 'desks_create' %}" class="create-desk-button">Create Your First Desk</a>
         </div>
+    {% endif %}
+<div class="desks-container">
+    <form method="post" action="{% url 'desks_create' %}"class="create-desk-form">
+        {% csrf_token %}
+        <button type="submit" class="create-desk-btn">Create New Desk</button>
     </div>
-    {% empty %}
-    <p>You don't have any desks yet.</p>
-    {% endfor %}
-</div>
-
-<div class="actions">
-    <a href="{% url 'desks_create' %}" class="btn btn-primary">Create New Desk</a>
 </div>
 {% endblock %}

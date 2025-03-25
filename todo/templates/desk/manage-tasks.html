@@ -41,12 +41,6 @@
             <td class="task-cell">
                 <div class="task-actions">
                     <!-- Fix: Add desk_slug to the URLs -->
-                    <form method="post" action="{% url 'tasks_toggle' desk_slug=desk.slug task_id=task.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="task-button">
-                            {% if task.is_active %}Complete{% else %}Reactivate{% endif %}
-                        </button>
-                    </form>
                     <form method="post" action="{% url 'tasks_delete' desk_slug=desk.slug task_id=task.id %}">
                         {% csrf_token %}
                         <button type="submit" class="task-button delete">Delete</button>
@@ -60,9 +54,5 @@
         </tr>
         {% endfor %}
     </table>
-</div>
-
-<div class="back-link">
-    <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn">Back to Tasks</a>
 </div>
 {% endblock %}

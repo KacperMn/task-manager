@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Manage Categories{% endblock %}
 
@@ -9,46 +10,40 @@
     <h2>Categories</h2>
     <table class="categories-table">
         <!-- Form for Adding a New Category -->
-        <tr class="category-row">
-            <!-- Fix: Add desk_slug to the URL -->
+        <tr>
             <form method="post" action="{% url 'categories_add' desk_slug=desk.slug %}">
                 {% csrf_token %}
-                <td class="category-cell">
-                    <input type="text" name="title" placeholder="Category Title" class="category-input" required>
+                <td class="category-title-col">
+                    <input type="text" name="title" placeholder="Category Title" required class="category-input">
                 </td>
-                <td class="category-cell">
-                    <input type="text" name="description" placeholder="Category Description" class="category-input">
+                <td class="category-desc-col">
+                    <input name="description" placeholder="Category Description" class="category-input">
                 </td>
-                <td class="category-cell">
-                    <button type="submit" class="category-button">Add Category</button>
+                <td class="category-actions-col">
+                    <button type="submit" class="category-btn add-category-btn">Add</button>
                 </td>
             </form>
         </tr>
-        
-        <!-- Display Existing Categories -->
+
+        <!-- List of Categories -->
         {% for category in categories %}
-        <tr class="category-row">
-            <td class="category-cell">{{ category.title }}</td>
-            <td class="category-cell">{{ category.description }}</td>
-            <td class="category-cell">
-                <div class="category-actions">
-                    <!-- Fix: Add desk_slug to the URL -->
-                    <form method="post" action="{% url 'categories_delete' desk_slug=desk.slug category_id=category.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="category-button delete">Delete</button>
-                    </form>
-                </div>
+        <tr>
+            <td class="category-title-col">{{ category.title }}</td>
+            <td class="category-desc-col">{{ category.description }}</td>
+            <td class="category-actions-col">
+                <form method="post" action="{% url 'categories_delete' desk_slug=desk.slug category_id=category.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="category-btn delete-category-btn">Delete</button>
+                </form>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="3">No categories found. Add some categories.</td>
+            <td colspan="3" class="no-categories-message">No categories found. Add some categories above.</td>
         </tr>
         {% endfor %}
     </table>
-</div>
-
-<div class="back-link">
-    <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn">Back to Tasks</a>
+    
+    <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="back-button">Back to Tasks</a>
 </div>
 {% endblock %}
