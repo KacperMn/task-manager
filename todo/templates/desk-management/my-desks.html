@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}My Desks{% endblock %}
+
+{% block content %}
+<h1>My Desks</h1>
+
+<div class="desk-list">
+    {% for desk in desks %}
+    <div class="desk-item">
+        <h2>{{ desk.name }}</h2>
+        <div class="actions">
+            <!-- Use desk.slug in URL -->
+            <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn btn-primary">Open</a>
+            <!-- Other actions -->
+            <form method="post" action="{% url 'desks_rename' desk_id=desk.id %}" class="inline">
+                {% csrf_token %}
+                <input type="text" name="new_name" placeholder="New name" required>
+                <button type="submit" class="btn btn-secondary">Rename</button>
+            </form>
+            
+            <form method="post" action="{% url 'desks_delete' desk_id=desk.id %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <p>You don't have any desks yet.</p>
+    {% endfor %}
+</div>
+
+<div class="actions">
+    <a href="{% url 'desks_create' %}" class="btn btn-primary">Create New Desk</a>
+</div>
+{% endblock %}

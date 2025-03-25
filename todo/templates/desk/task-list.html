@@ -1,33 +1,31 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}To Do List{% endblock %}
+{% block title %}{{ desk.name }} Tasks{% endblock %}
 
-{% block heading %}<h1>TO DO</h1>{% endblock %}
+{% block heading %}<h1>{{ desk.name }} Tasks</h1>{% endblock %}
 
 {% block content %}
+<!-- Task display -->
 <div class="tasks-container">
-    <!-- Active Tasks Section -->
     <div class="active-tasks">
         <h2>Active Tasks</h2>
         <ul class="task-list">
             {% for task in tasks %}
                 {% if task.is_active %}
-                    <li>
-                        <form method="post" class="toggle-task-form" data-task-id="{{ task.id }}">
-                            {% csrf_token %}
-                            <button type="submit" class="list-btn active">
-                                {{ task }}
-                                <span class="list-btn-icon">✓</span>
-                            </button>
-                        </form>
-                    </li>
+                <li class="task-item">
+                    <form method="post" action="{% url 'tasks_toggle' desk_slug=desk.slug task_id=task.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="list-btn active">
+                            {{ task }}
+                            <span class="list-btn-icon">✓</span>
+                        </button>
+                    </form>
+                </li>
                 {% endif %}
             {% endfor %}
         </ul>
     </div>
-
-    <!-- Suggested Tasks Section -->
     <div class="inactive-tasks">
         <h2>Suggested Tasks</h2>
         <div class="inactive-tasks-scroll">
@@ -35,9 +33,9 @@
                 {% for task in tasks %}
                     {% if not task.is_active %}
                         <li>
-                            <form method="post" class="toggle-task-form" data-task-id="{{ task.id }}">
+                            <form method="post" action="{% url 'tasks_toggle' desk_slug=desk.slug task_id=task.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="list-btn inactive">
+                                <button class="list-btn inactive">
                                     {{ task }}
                                     <span class="list-btn-icon">✓</span>
                                 </button>

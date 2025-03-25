@@ -12,37 +12,35 @@
         <nav class="navbar">
             <!-- Left-aligned: Brand -->
             <div class="navbar-left">
-                <a href="{% url 'tasks:todo' %}" class="navbar-brand">TODO List</a>
+                <a href="{% url 'home' %}" class="navbar-brand">Task Manager</a>
             </div>
 
             <!-- Right-aligned: Navigation Links -->
             <div class="navbar-right">
-                <!-- Navigation Buttons -->
-                <a href="{% url 'tasks:manage_tasks' %}" class="navbar-btn">Manage Tasks</a>
-                <a href="{% url 'categories:manage_categories' %}" class="navbar-btn">Manage Categories</a>
+                <!-- Always visible links -->
+                <a href="{% url 'desks_list' %}" class="navbar-btn">My Desks</a>
+                <a href="{% url 'user_profile' %}" class="navbar-btn">Profile</a>
 
-                <!-- Profile Dropdown -->
-                <div class="dropdown">
-                    <button class="dropdown-toggle">
-                        <img src="{% static 'images/profile-icon.png' %}" alt="Profile" class="profile-icon">
-                        <span class="profile-username">{{ user.username }}</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="{% url 'user:profile' %}">View/Edit Profile</a>
-                        <a href="{% url 'user:workplace' %}">View/Edit Workplace</a>
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="logout-btn">Log Out</button>
-                        </form>
-                    </div>
-                </div>
+                <!-- Desk-dependent links -->
+                {% if desk %}
+                    <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="navbar-btn">Tasks</a>
+                    <a href="{% url 'tasks_manage' desk_slug=desk.slug %}" class="navbar-btn">Manage Tasks</a>
+                    <a href="{% url 'categories_manage' desk_slug=desk.slug %}" class="navbar-btn">Categories</a>
+                {% endif %}
+
+                <!-- Logout button -->
+                <form method="post" action="{% url 'logout' %}" class="navbar-btn logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Log Out</button>
+                </form>
             </div>
         </nav>
     </header>
+
     <main>
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
+
     <footer>
         <p>&copy; 2025 Task Manager. All rights reserved.</p>
     </footer>

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Categories{% endblock %}
+
+{% block heading %}<h1>Manage Categories</h1>{% endblock %}
+
+{% block content %}
+<div class="categories-container">
+    <h2>Categories</h2>
+    <table class="categories-table">
+        <!-- Form for Adding a New Category -->
+        <tr class="category-row">
+            <!-- Fix: Add desk_slug to the URL -->
+            <form method="post" action="{% url 'categories_add' desk_slug=desk.slug %}">
+                {% csrf_token %}
+                <td class="category-cell">
+                    <input type="text" name="title" placeholder="Category Title" class="category-input" required>
+                </td>
+                <td class="category-cell">
+                    <input type="text" name="description" placeholder="Category Description" class="category-input">
+                </td>
+                <td class="category-cell">
+                    <button type="submit" class="category-button">Add Category</button>
+                </td>
+            </form>
+        </tr>
+        
+        <!-- Display Existing Categories -->
+        {% for category in categories %}
+        <tr class="category-row">
+            <td class="category-cell">{{ category.title }}</td>
+            <td class="category-cell">{{ category.description }}</td>
+            <td class="category-cell">
+                <div class="category-actions">
+                    <!-- Fix: Add desk_slug to the URL -->
+                    <form method="post" action="{% url 'categories_delete' desk_slug=desk.slug category_id=category.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="category-button delete">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No categories found. Add some categories.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="back-link">
+    <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn">Back to Tasks</a>
+</div>
+{% endblock %}
