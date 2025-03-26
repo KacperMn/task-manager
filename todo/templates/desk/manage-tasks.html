@@ -5,52 +5,50 @@
 {% block heading %}<h1>Manage Tasks</h1>{% endblock %}
 
 {% block content %}
-<div class="tasks-container">
+<div class="manage-container">
     <h2>Tasks</h2>
-    <table class="tasks-table">
+    <table class="manage-table">
         <!-- Form for Adding a New Task -->
-        <tr class="task-row">
-            <!-- Fix: Add desk_slug to the URL -->
+        <tr class="manage-row">
             <form method="post" action="{% url 'tasks_add' desk_slug=desk.slug %}">
                 {% csrf_token %}
-                <td class="task-cell">
-                    <input type="text" name="title" placeholder="Task Title" class="task-input" required>
+                <td class="manage-cell">
+                    <input type="text" name="title" placeholder="Task Title" class="manage-input" required>
                 </td>
-                <td class="task-cell">
-                    <input type="text" name="description" placeholder="Task Description" class="task-input" required>
+                <td class="manage-cell">
+                    <input type="text" name="description" placeholder="Task Description" class="manage-input" required>
                 </td>
-                <td class="task-cell">
-                    <select name="category" class="task-select" required>
+                <td class="manage-cell">
+                    <select name="category" class="manage-select" required>
                         {% for category in categories %}
                         <option value="{{ category.id }}">{{ category.title }}</option>
                         {% endfor %}
                     </select>
                 </td>
-                <td class="task-cell">
-                    <button type="submit" class="task-button">Add Task</button>
+                <td class="manage-cell manage-actions">
+                    <button type="submit" class="manage-button">Add Task</button>
                 </td>
             </form>
         </tr>
         
         <!-- Display Existing Tasks -->
         {% for task in tasks %}
-        <tr class="task-row {% if not task.is_active %}completed{% endif %}">
-            <td class="task-cell">{{ task.title }}</td>
-            <td class="task-cell">{{ task.description }}</td>
-            <td class="task-cell">{{ task.category.title }}</td>
-            <td class="task-cell">
-                <div class="task-actions">
-                    <!-- Fix: Add desk_slug to the URLs -->
+        <tr class="manage-row {% if not task.is_active %}completed{% endif %}">
+            <td class="manage-cell">{{ task.title }}</td>
+            <td class="manage-cell">{{ task.description }}</td>
+            <td class="manage-cell">{{ task.category.title }}</td>
+            <td class="manage-cell">
+                <div class="manage-actions">
                     <form method="post" action="{% url 'tasks_delete' desk_slug=desk.slug task_id=task.id %}">
                         {% csrf_token %}
-                        <button type="submit" class="task-button delete">Delete</button>
+                        <button type="submit" class="manage-button delete">Delete</button>
                     </form>
                 </div>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="4">No tasks found. Add some tasks.</td>
+            <td colspan="4" class="manage-empty-message">No tasks found. Add some tasks.</td>
         </tr>
         {% endfor %}
     </table>

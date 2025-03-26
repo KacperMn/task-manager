@@ -134,6 +134,8 @@ def desk_view(request, desk_slug):
         'desk': desk,  # Pass the desk to the template
         'tasks': tasks,
         'categories': categories,
+        'show_navbar': True,
+        'show_footer': True
     })
 
 @login_required
@@ -145,7 +147,9 @@ def manage_tasks(request, desk_slug):
     return render(request, 'desk/manage-tasks.html', {
         'tasks': tasks, 
         'categories': categories,
-        'desk': desk
+        'desk': desk,
+        'show_navbar': True,
+        'show_footer': True
     })
 
 @login_required
@@ -204,7 +208,9 @@ def manage_categories(request, desk_slug):
     categories = Category.objects.filter(desk=desk)
     return render(request, 'desk/manage-categories.html', {
         'categories': categories,
-        'desk': desk
+        'desk': desk,
+        'show_navbar': True,
+        'show_footer': True
     })
 
 @login_required
