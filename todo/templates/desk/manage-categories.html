@@ -14,10 +14,16 @@
             <form method="post" action="{% url 'categories_add' desk_slug=desk.slug %}">
                 {% csrf_token %}
                 <td class="manage-cell">
-                    <input type="text" name="title" placeholder="Category Title" class="manage-input" required>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="text-danger">{{ form.title.errors }}</div>
+                    {% endif %}
                 </td>
                 <td class="manage-cell">
-                    <input name="description" placeholder="Category Description" class="manage-input">
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-danger">{{ form.description.errors }}</div>
+                    {% endif %}
                 </td>
                 <td class="manage-cell manage-actions">
                     <button type="submit" class="manage-button">Add Category</button>

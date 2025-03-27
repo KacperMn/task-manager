@@ -1,11 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseBadRequest, JsonResponse, Http404
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
-from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
-from django.utils.text import slugify
 from .models import Task, Category, UserProfile, Desk
+from .utils import generate_unique_slug
+from .forms import TaskForm, CategoryForm  # Update import
 
 def home(request):
     """Redirect authenticated users to their desks list or login page if not authenticated"""
@@ -13,8 +12,10 @@ def home(request):
         return redirect('desks_list')  # Assuming 'desks_list' is the URL name for my_desks
     return redirect('login')
 
+#------------#
+# DESK VIEWS #
+#------------#
 
-# Desk-related views
 @login_required
 def my_desks(request):
     desks = Desk.objects.filter(user=request.user)
@@ -28,16 +29,10 @@ def create_desk(request):
         if not desk_name:
             messages.error(request, "Desk name is required.")
             return redirect('desks_create')
-            
-        # Generate slug
-        base_slug = slugify(desk_name)
-        slug = f"{base_slug}-{request.user.id}"
-        # Ensure uniqueness
-        counter = 1
-        while Desk.objects.filter(slug=slug).exists():
-            slug = f"{base_slug}-{request.user.id}-{counter}"
-            counter += 1
-            
+
+        # Generate a unique slug for the desk
+        slug = generate_unique_slug(desk_name, request.user.id, Desk)
+
         # Create desk
         desk = Desk.objects.create(
             name=desk_name,
@@ -74,13 +69,14 @@ def get_desk_by_slug(slug, user):
     desk = get_object_or_404(Desk, slug=slug, user=user)
     return desk
 
-# Task-related views
-# Rename 'desk' view to 'desk_view' to match URLs
+#------------#
+# TASK VIEWS #
+#------------#
 @login_required
 def desk_view(request, desk_slug):
-    """View tasks for a specific desk identified by slug"""
     desk = get_object_or_404(Desk, slug=desk_slug, user=request.user)
-    tasks = Task.objects.filter(category__desk=desk)
+    # Optimize with prefetch_related
+    tasks = Task.objects.filter(category__desk=desk).select_related('category')
     categories = Category.objects.filter(desk=desk)
     return render(request, 'desk/task-list.html', {
         'desk': desk,  # Pass the desk to the template
@@ -106,23 +102,23 @@ def manage_tasks(request, desk_slug):
 
 @login_required
 def add_task(request, desk_slug):
-    """Add a task to a specific desk"""
+    desk = get_desk_by_slug(desk_slug, request.user)
+    
     if request.method == 'POST':
-        desk = get_desk_by_slug(desk_slug, request.user)
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        category_id = request.POST.get('category')
-        
-        if not title or not category_id:
-            messages.error(request, "Title and category fields are required.")
+        form = TaskForm(desk=desk, data=request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            # Additional processing if needed
+            task.save()
+            messages.success(request, f"Task '{task.title}' created successfully.")
             return redirect('tasks_manage', desk_slug=desk_slug)
-            
-        # Verify category belongs to this desk
-        category = get_object_or_404(Category, id=category_id, desk=desk)
-        Task.objects.create(title=title, description=description, category=category)
-        messages.success(request, f"Task '{title}' created successfully.")
-        return redirect('tasks_manage', desk_slug=desk_slug)
-    return HttpResponseBadRequest("Invalid request method.")
+    else:
+        form = TaskForm(desk=desk)
+        
+    return render(request, 'desk/add_task.html', {
+        'form': form,
+        'desk': desk,
+    })
 
 @login_required
 def delete_task(request, desk_slug, task_id):
@@ -152,35 +148,47 @@ def toggle_task_active(request, desk_slug, task_id):
         })
     return JsonResponse({'success': False}, status=400)
 
-# Category-related views
+#----------------#
+# CATEGORY VIEWS #
+#----------------#
+
 @login_required
 def manage_categories(request, desk_slug):
     """Manage categories for a specific desk"""
     desk = get_desk_by_slug(desk_slug, request.user)
     categories = Category.objects.filter(desk=desk)
+    category_form = CategoryForm()  # Add this line to create a form instance
+    
     return render(request, 'desk/manage-categories.html', {
         'categories': categories,
         'desk': desk,
+        'form': category_form,  # Pass the form to the template
         'show_navbar': True,
         'show_footer': True
     })
 
 @login_required
 def add_category(request, desk_slug):
-    """Add a category to a specific desk"""
+    """Add a category to a specific desk using CategoryForm"""
+    desk = get_desk_by_slug(desk_slug, request.user)
+    
     if request.method == 'POST':
-        desk = get_desk_by_slug(desk_slug, request.user)
-        title = request.POST.get('title')
-        description = request.POST.get('description', '')
-        
-        if not title:
-            messages.error(request, "Category title is required.")
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.desk = desk
+            category.save()
+            messages.success(request, f"Category '{category.title}' created successfully.")
             return redirect('categories_manage', desk_slug=desk_slug)
-            
-        Category.objects.create(title=title, description=description, desk=desk)
-        messages.success(request, f"Category '{title}' created successfully.")
-        return redirect('categories_manage', desk_slug=desk_slug)
-    return HttpResponseBadRequest("Invalid request method.")
+        else:
+            # If the form is not valid, redirect to manage page with errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            return redirect('categories_manage', desk_slug=desk_slug)
+
+    # Redirect to categories_manage for GET requests - you don't need a separate page
+    return redirect('categories_manage', desk_slug=desk_slug)
 
 @login_required
 def delete_category(request, desk_slug, category_id):
@@ -193,9 +201,12 @@ def delete_category(request, desk_slug, category_id):
     messages.success(request, f"Category '{category_title}' deleted successfully.")
     return redirect('categories_manage', desk_slug=desk_slug)
 
+#---------------#
+# PROFILE VIEWS #
+#---------------#
+
 @login_required
 def profile(request):
-    # Get or create user profile in case it doesn't exist
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     
     return render(request, 'profile.html', {
