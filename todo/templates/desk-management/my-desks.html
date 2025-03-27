@@ -5,9 +5,7 @@
 {% block content %}
 <div class="desks-page">
     <h1 class="page-title">My Desks</h1>
-    
-    <div class="desks-grid-container">
-        {% if desks %}
+        <div class="desks-grid-container">
             <ul class="desks-grid">
             {% for desk in desks %}
                 <li class="desk-square">
@@ -27,12 +25,6 @@
                     </a>
                 </li>
             </ul>
-        {% else %}
-            <div class="no-desks-message">
-                <p>You don't have any desks yet.</p>
-                <p>Create your first desk to get started!</p>
-            </div>
-        {% endif %}
-    </div>
+        </div>
 </div>
 {% endblock %}

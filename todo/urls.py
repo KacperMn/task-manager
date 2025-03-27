@@ -6,11 +6,6 @@ urlpatterns = [
     # Home URL
     path('', views.home, name='home'),
 
-    # Authentication-related URLs
-    path('accounts/login/', LoginView.as_view(template_name='user-handling/login.html'), name='login'),
-    path('accounts/logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('accounts/register/', views.register, name='register'),
-
     # Desk-related URLs
     path('my-desks/', views.my_desks, name='desks_list'),
     path('my-desks/create/', views.create_desk, name='desks_create'),

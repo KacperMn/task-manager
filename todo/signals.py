@@ -1,7 +1,8 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from .models import UserProfile, Desk
+from django.utils.text import slugify
+from .models import Desk, UserProfile, Category
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -10,4 +11,4 @@ def create_user_profile(sender, instance, created, **kwargs):
     """
     if created:
         UserProfile.objects.create(user=instance)
-        Desk.objects.create(user=instance)
+        # Rest of the function stays the same (desk and category creation)

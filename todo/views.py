@@ -6,52 +6,11 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.utils.text import slugify
 from .models import Task, Category, UserProfile, Desk
-from .forms import UserRegistrationForm
-
-# Authentication-related views
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'user-handling/register.html', {'form': form})
 
 def home(request):
-    """Redirect authenticated users to their first desk or create one if none exists"""
+    """Redirect authenticated users to their desks list or login page if not authenticated"""
     if request.user.is_authenticated:
-        # Try to get first desk for user
-        desk = Desk.objects.filter(user=request.user).first()
-        
-        if not desk:
-            # Create a default desk if none exists
-            desk_name = "Personal Desk"
-            base_slug = slugify(desk_name)
-            slug = f"{base_slug}-{request.user.id}"
-            # Ensure uniqueness
-            counter = 1
-            while Desk.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}-{request.user.id}-{counter}"
-                counter += 1
-                
-            desk = Desk.objects.create(
-                name=desk_name,
-                slug=slug,
-                user=request.user
-            )
-            # Create a default category
-            Category.objects.create(
-                title="General",
-                description="Default category",
-                desk=desk
-            )
-            messages.success(request, "Your personal desk has been created.")
-            
-        # Redirect to the tasks list for this desk
-        return redirect('tasks_list', desk_slug=desk.slug)
+        return redirect('desks_list')  # Assuming 'desks_list' is the URL name for my_desks
     return redirect('login')
 
 
@@ -59,7 +18,7 @@ def home(request):
 @login_required
 def my_desks(request):
     desks = Desk.objects.filter(user=request.user)
-    return render(request, 'desk-management/my-desks.html', {'desks': desks})
+    return render(request, 'desk-management/my-desks.html', {'desks': desks,})
 
 @login_required
 def create_desk(request):
@@ -84,13 +43,6 @@ def create_desk(request):
             name=desk_name,
             slug=slug,
             user=request.user
-        )
-        
-        # Create default category
-        Category.objects.create(
-            title="General", 
-            description="Default category",
-            desk=desk
         )
         
         messages.success(request, f"Desk '{desk_name}' created successfully.")
@@ -243,11 +195,11 @@ def delete_category(request, desk_slug, category_id):
 
 @login_required
 def profile(request):
-    user_profile = UserProfile.objects.get(user=request.user)
-    if request.method == 'POST':
-        mode = request.POST.get('mode')
-        if mode in dict(UserProfile.MODE_CHOICES):
-            user_profile.mode = mode
-            user_profile.save()
-        return redirect('user_profile')
-    return render(request, 'user-handling/profile.html', {'user_profile': user_profile})
+    # Get or create user profile in case it doesn't exist
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    return render(request, 'profile.html', {
+        'user_profile': user_profile,
+        'show_navbar': True,
+        'show_footer': True
+    })
