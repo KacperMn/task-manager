@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/variables.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if show_navbar %}
+        {% include 'navbar.html' %}
+    {% endif %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    {% if show_footer %}
+        {% include 'footer.html' %}
+    {% endif %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

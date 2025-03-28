@@ -3,8 +3,8 @@
 
 {% block title %}Share Desk - {{ desk.name }}{% endblock %}
 
-{% block extra_head %}
-<script src="{% static 'js/share-desk.js' %}" defer></script>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desks.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -109,5 +109,14 @@
             Back to Edit Page
         </a>
     </div>
+
+    <!-- Additional Information -->
+    <div class="mt-4">
+        {% for share in desk.user_shares.all %}
+            {{ share.user.username }} - {{ share.get_permission_display }}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/share-desk.js' %}" defer></script>{% endblock %}

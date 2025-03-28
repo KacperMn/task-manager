@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'todo',
     'accounts',
+    'desks',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'project' / 'templates'],  # Add this line
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,10 +121,13 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Optional: If you have additional static directories
+# Project-wide static files + app-specific static directories
 STATICFILES_DIRS = [
-    BASE_DIR / "todo/static",
+    BASE_DIR / "project" / "static",  # Project-wide static files
 ]
+
+# Where collectstatic will put files for production
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

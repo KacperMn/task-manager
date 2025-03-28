@@ -1,4 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Desk{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desks.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="container mt-4">

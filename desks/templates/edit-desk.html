@@ -3,6 +3,11 @@
 
 {% block title %}Edit Desk - {{ desk.name }}{% endblock %}
 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desks.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <div class="row">

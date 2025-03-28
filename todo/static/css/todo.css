@@ -1,0 +1,196 @@
+.manage-container {
+    width: 100%;
+    /*max-width: 900px;*/
+    margin: 0 auto;
+    padding: var(--spacing-md);
+}
+
+.manage-container h2 {
+    color: var(--color-text);
+    padding-bottom: var(--spacing-sm);
+}
+
+.manage-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.manage-row {
+    border-bottom: 1px solid var(--color-form-border);
+}
+
+.manage-row.completed {
+    opacity: 0.7;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.manage-cell {
+    padding: var(--spacing-sm);
+    /*text-align: left;*/
+    vertical-align: middle;
+    color: var(--color-text);
+}
+
+/* Management buttons */
+.manage-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-normal), transform var(--transition-fast);
+}
+
+.manage-button:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+}
+
+.manage-button.delete {
+    background-color: var(--color-danger);
+}
+
+.manage-button.delete:hover {
+    background-color: var(--color-danger-hover);
+}
+
+.manage-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+}
+
+.manage-back-link {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+    display: inline-block;
+    margin-top: var(--spacing-md);
+    text-decoration: none;
+}
+
+.manage-back-link:hover {
+    background-color: var(--color-secondary-hover);
+}
+
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: var(--spacing-lg);
+    overflow: hidden; /* Prevent scrollbars when buttons scale */
+}
+
+.active-tasks {
+    margin-bottom: var(--spacing-lg);
+    flex: 1;
+    overflow: hidden; /* Additional protection against overflow */
+}
+
+.task-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    overflow: visible; /* Allow items to grow outside the list */
+}
+
+.task-list li {
+    margin-bottom: var(--spacing-sm);
+    overflow: visible; /* Allow button to expand beyond list item */
+    padding: 1px; /* Tiny padding to prevent edge overlap */
+}
+
+/* List Button Styles */
+.list-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-form-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-list-item-background);
+    color: var (--color-list-item-text);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    text-align: left;
+    box-shadow: var(--shadow-light);
+    transition: background-color var(--transition-normal), transform var(--transition-fast);
+}
+
+.list-btn:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+}
+
+.list-btn:active {
+    transform: scale(0.98);
+}
+
+.list-btn-icon {
+    font-size: var(--font-size-lg);
+    color: var(--color-form-text);
+}
+
+.list-btn.active {
+    background-color: var(--color-button-active);
+    color: var(--color-form-text);
+}
+
+.list-btn.inactive {
+    background-color: var(--color-button-inactive);
+    color: var(--color-text-muted);
+}
+
+.list-btn.inactive .list-btn-icon {
+    color: var(--color-text-muted);
+    margin-left: var(--spacing-sm);
+}
+
+/* Suggested Tasks Section */
+.inactive-tasks-scroll {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-form-border);
+    background-color: var(--color-background);
+}
+
+.task-list-horizontal {
+    display: inline-flex;
+    gap: var(--spacing-sm);
+    padding: 0;
+    margin: 0;
+}
+
+.task-list-horizontal li {
+    flex-shrink: 0;
+    width: auto;
+}
+
+/* Task Table */
+.tasks-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-lg);
+}
+
+.task-row {
+    border-bottom: 1px solid var(--color-form-border);
+}
+
+.task-cell {
+    padding: var(--spacing-sm);
+    text-align: left;
+    vertical-align: middle;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.task-actions {
+    text-align: center;
+    white-space: nowrap;
+}

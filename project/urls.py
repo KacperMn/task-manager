@@ -20,6 +20,7 @@ from todo import views as todo_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('todo.urls')),  # Include todo URLs at the root level
     path('accounts/', include('accounts.urls')),  # Include accounts URLs under /accounts/
+    path('my-desks/', include('desks.urls')),  # Include desks URLs under /my-desks/
+    path('', include('todo.urls')),  # Include todo URLs at the root level
 ]

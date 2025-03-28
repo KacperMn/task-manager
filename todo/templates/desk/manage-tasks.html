@@ -1,8 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Manage Tasks{% endblock %}
 
-{% block heading %}<h1>Manage Tasks</h1>{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/todo.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="manage-container">
