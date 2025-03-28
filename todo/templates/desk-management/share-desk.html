@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Share Desk - {{ desk.name }}{% endblock %}
+
+{% block extra_head %}
+<script src="{% static 'js/share-desk.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h2 mb-4">Share "{{ desk.name }}" Desk</h1>
+
+    <div class="row">
+        <!-- Share Link Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">Share Link</h2>
+                </div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="share-url" value="{{ share_url }}" readonly>
+                        <button class="btn btn-outline-primary" type="button" id="copy-button">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    
+                    <div class="text-center">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ share_url|urlencode }}" 
+                             alt="QR Code" class="img-fluid border rounded" style="max-width: 200px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Users and Permissions Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">Users with Access</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>User</th>
+                                    <th>Permission</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Owner row -->
+                                <tr>
+                                    <td>
+                                        <strong>{{ desk.user.username }}</strong> (You)
+                                    </td>
+                                    <td><span class="badge bg-danger">Owner</span></td>
+                                    <td>-</td>
+                                </tr>
+                                
+                                <!-- Shared users -->
+                                {% for share in user_shares %}
+                                <tr>
+                                    <td>{{ share.user.username }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'update_user_permission' desk_id=desk.id user_id=share.user.id %}" 
+                                              id="permission-form-{{ share.user.id }}">
+                                            {% csrf_token %}
+                                            <select name="permission" class="form-select form-select-sm" 
+                                                   data-user-id="{{ share.user.id }}"
+                                                   data-username="{{ share.user.username }}">
+                                                <option value="view" {% if share.permission == 'view' %}selected{% endif %}>View Only</option>
+                                                <option value="admin" {% if share.permission == 'admin' %}selected{% endif %}>Admin</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'remove_shared_user' desk_id=desk.id user_id=share.user.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-danger remove-user-btn">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center p-3">
+                                        No users have been added yet
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action buttons -->
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn btn-primary">
+            Go to Desk
+        </a>
+        <a href="{% url 'desks_edit' desk_id=desk.id %}" class="btn btn-secondary">
+            Back to Edit Page
+        </a>
+    </div>
+</div>
+{% endblock %}

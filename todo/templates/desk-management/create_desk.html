@@ -1,10 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Create a New Desk</h1>
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="desk_name" placeholder="Desk name" required>
-    <button type="submit">Create Desk</button>
-</form>
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>Create New Desk</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'desks_create' %}">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="desk_name">Desk Name</label>
+                    <input type="text" class="form-control" id="desk_name" name="desk_name" required>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label>Visibility</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="visibility" id="private" value="private" checked>
+                        <label class="form-check-label" for="private">
+                            <strong>Private</strong> - Only you can access this desk
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="visibility" id="public" value="public">
+                        <label class="form-check-label" for="public">
+                            <strong>Public</strong> - Generate a shareable link for others
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="share_after_create" name="share_after_create">
+                    <label class="form-check-label" for="share_after_create">
+                        Share this desk after creation
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Desk</button>
+                <a href="{% url 'desks_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

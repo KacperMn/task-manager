@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Desk - {{ desk.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2>Edit Desk</h2>
+                    <a href="{% url 'share_desk' desk_id=desk.id %}" class="btn btn-primary">
+                        <i class="fas fa-share-alt"></i> Share Desk
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'desks_edit' desk_id=desk.id %}">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="desk_name">Desk Name</label>
+                            <input type="text" class="form-control" id="desk_name" name="desk_name" value="{{ desk.name }}" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="desk_description">Description (Optional)</label>
+                            <textarea class="form-control" id="desk_description" name="desk_description" rows="3">{{ desk.description }}</textarea>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <div>
+                                <button type="submit" class="btn btn-success">Update Desk</button>
+                                <a href="{% url 'desks_list' %}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                            
+                            <!-- Delete desk button -->
+                            <form method="post" action="{% url 'desks_delete' desk_id=desk.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this desk? All tasks and categories will be permanently deleted.');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete Desk</button>
+                            </form>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

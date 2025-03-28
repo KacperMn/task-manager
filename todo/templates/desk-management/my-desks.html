@@ -15,6 +15,13 @@
                             <div class="desk-placeholder-icon"></div>
                         </div>
                         <div class="desk-name">{{ desk.name }}</div>
+                        <div class="desk-actions">
+                            {% if desk.user == request.user %}
+                            <a href="{% url 'desks_edit' desk_id=desk.id %}" class="btn btn-secondary">
+                                <i class="fas fa-edit"></i> Edit & Share
+                            </a>
+                            {% endif %}
+                        </div>
                     </a>
                 </li>
             {% endfor %}
