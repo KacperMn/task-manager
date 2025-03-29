@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'todo',
     'accounts',
     'desks',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -139,3 +140,21 @@ LOGIN_REDIRECT_URL = '/'
 
 # Redirect after logout
 LOGOUT_REDIRECT_URL = '/'
+
+# Django Q configuration
+Q_CLUSTER = {
+    'name': 'task_manager',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q2',
+    'redis': {
+        'host': '127.0.0.1',
+        'port': 6379,
+        'db': 0,
+    }
+}

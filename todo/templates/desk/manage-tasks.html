@@ -8,6 +8,125 @@
 {% endblock %}
 
 {% block content %}
+<!-- Schedule Templates Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Task Scheduling</h3>
+    </div>
+    <div class="card-body">
+        <!-- Create new template -->
+        <div class="mb-4">
+            <h4>Create New Schedule Template</h4>
+            <form method="post" action="{% url 'create_template' desk_slug=desk.slug %}" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-4">
+                    <input type="text" name="name" class="form-control" placeholder="Template Name" required>
+                </div>
+                <div class="col-md-3">
+                    <select name="day" class="form-select">
+                        {% for day_id, day_name in days_of_week %}
+                        <option value="{{ day_id }}">{{ day_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="time" name="time" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" name="add_trigger" class="btn btn-secondary">Add Trigger</button>
+                </div>
+                <div class="col-12 mt-2">
+                    <button type="submit" name="save_template" class="btn btn-primary">Save Template</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Schedule Templates Table -->
+        <div class="mb-4">
+            <h4>Schedule Templates</h4>
+            <table class="manage-table">
+                <thead>
+                    <tr class="manage-row">
+                        <th>Template Name</th>
+                        <th>Trigger Moments</th>
+                        <th>Applied Tasks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for template in schedule_templates %}
+                    <tr class="manage-row">
+                        <td class="manage-cell">
+                            {{ template.name }}
+                        </td>
+                        <td class="manage-cell">
+                            {% for trigger in template.triggers.all %}
+                            <div class="badge bg-info text-dark mb-1">
+                                {{ trigger.get_day_of_week_display }} at {{ trigger.time|time:"H:i" }}
+                                <a href="{% url 'remove_trigger' desk_slug=desk.slug trigger_id=trigger.id %}" 
+                                   onclick="return confirm('Remove this trigger?');" class="text-danger ms-1">&times;</a>
+                            </div>
+                            {% empty %}
+                            <em class="text-muted">No triggers defined</em>
+                            {% endfor %}
+                        </td>
+                        <td class="manage-cell">
+                            {% for schedule in template.task_schedules.all %}
+                            {% if schedule.is_active %}
+                            <div class="badge bg-success mb-1">{{ schedule.task.title }}</div>
+                            {% endif %}
+                            {% empty %}
+                            <em class="text-muted">Not applied to any tasks</em>
+                            {% endfor %}
+                        </td>
+                        <td class="manage-cell">
+                            <div class="manage-actions">
+                                <form method="post" action="{% url 'delete_template' desk_slug=desk.slug template_id=template.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="manage-button delete" onclick="return confirm('Delete this template?');">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="manage-empty-message">No schedule templates found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Apply existing template to task -->
+        <div class="mb-4">
+            <h4>Apply Schedule to Task</h4>
+            <form method="post" action="{% url 'apply_template' desk_slug=desk.slug %}" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-5">
+                    <select name="template_id" class="form-select" required>
+                        <option value="">Select a schedule template</option>
+                        {% for template in schedule_templates %}
+                        <option value="{{ template.id }}">{{ template.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <select name="task_id" class="form-select" required>
+                        <option value="">Select a task</option>
+                        {% for task in tasks %}
+                        <option value="{{ task.id }}">{{ task.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Tasks Section -->
 <div class="manage-container">
     <h2>Tasks</h2>
     <table class="manage-table">
@@ -37,7 +156,22 @@
         <!-- Display Existing Tasks -->
         {% for task in tasks %}
         <tr class="manage-row {% if not task.is_active %}completed{% endif %}">
-            <td class="manage-cell">{{ task.title }}</td>
+            <td class="manage-cell">
+                {{ task.title }}
+                {% if task.schedules.exists %}
+                <div>
+                    {% for schedule in task.schedules.all %}
+                    {% if schedule.is_active %}
+                    <span class="task-schedule-badge" title="Schedule: {{ schedule.template.name }}">
+                        📅 {{ schedule.template.name }}
+                        <a href="{% url 'remove_schedule' desk_slug=desk.slug task_id=task.id schedule_id=schedule.id %}" 
+                           onclick="return confirm('Remove this schedule?');">❌</a>
+                    </span>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </td>
             <td class="manage-cell">{{ task.description }}</td>
             <td class="manage-cell">{{ task.category.title }}</td>
             <td class="manage-cell">
@@ -55,5 +189,17 @@
         </tr>
         {% endfor %}
     </table>
+</div>
+
+<!-- Current Time Debugging -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h3>Timezone Debugging</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>Current Server Time:</strong> {% now "Y-m-d H:i:s" %}</p>
+        <p><strong>Current Day:</strong> {% now "l" %} ({% now "w"|add:"-1" %} numeric)</p>
+        <p><strong>Timezone:</strong> {{ TIME_ZONE }}</p>
+    </div>
 </div>
 {% endblock %}
