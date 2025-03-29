@@ -2,24 +2,25 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
 from .utils import get_desk_by_slug
 from .models import Task, Category, UserProfile
 from .forms import TaskForm, CategoryForm
+from .decorators import get_desk
 
 def home(request):
     """Redirect authenticated users to their desks list or login page if not authenticated"""
     if request.user.is_authenticated:
-        return redirect('desks_list')  # Assuming 'desks_list' is the URL name for my_desks
+        return redirect('desks_list')
     return redirect('login')
 
 #------------#
 # TASK VIEWS #
 #------------#
 
+@get_desk
 @login_required
-def desk_view(request, desk_slug):
-    # Use get_desk_by_slug instead of direct query
-    desk = get_desk_by_slug(desk_slug, request.user)
+def desk_view(request, desk):
     # Optimize with prefetch_related
     tasks = Task.objects.filter(category__desk=desk).select_related('category')
     categories = Category.objects.filter(desk=desk)
@@ -31,11 +32,10 @@ def desk_view(request, desk_slug):
         'show_footer': True
     })
 
-
+@get_desk
 @login_required
-def manage_tasks(request, desk_slug):
+def manage_tasks(request, desk):
     """Manage tasks for a specific desk"""
-    desk = get_desk_by_slug(desk_slug, request.user)
     tasks = Task.objects.filter(category__desk=desk)
     categories = Category.objects.filter(desk=desk)
     return render(request, 'desk/manage-tasks.html', {
@@ -46,19 +46,17 @@ def manage_tasks(request, desk_slug):
         'show_footer': True
     })
 
-
+@get_desk
 @login_required
-def add_task(request, desk_slug):
-    desk = get_desk_by_slug(desk_slug, request.user)
+def add_task(request, desk):
     
     if request.method == 'POST':
         form = TaskForm(desk=desk, data=request.POST)
         if form.is_valid():
             task = form.save(commit=False)
-            # Additional processing if needed
             task.save()
             messages.success(request, f"Task '{task.title}' created successfully.")
-            return redirect('tasks_manage', desk_slug=desk_slug)
+            return redirect('tasks_manage', desk=desk)
     else:
         form = TaskForm(desk=desk)
         
@@ -67,25 +65,21 @@ def add_task(request, desk_slug):
         'desk': desk,
     })
 
-
+@get_desk
 @login_required
-def delete_task(request, desk_slug, task_id):
+def delete_task(request, desk, task_id):
     """Delete a task from a specific desk"""
-    desk = get_desk_by_slug(desk_slug, request.user)
-    # Ensure task belongs to this desk
     task = get_object_or_404(Task, id=task_id, category__desk=desk)
     task_title = task.title
     task.delete()
     messages.success(request, f"Task '{task_title}' deleted successfully.")
-    return redirect('tasks_manage', desk_slug=desk_slug)
+    return redirect('tasks_manage', desk=desk)
 
-
+@get_desk
 @login_required
-def toggle_task_active(request, desk_slug, task_id):
+def toggle_task_active(request, desk, task_id):
     """Toggle a task's active status on a specific desk"""
     if request.method == 'POST':
-        desk = get_desk_by_slug(desk_slug, request.user)
-        # Ensure task belongs to this desk
         task = get_object_or_404(Task, id=task_id, category__desk=desk)
         task.is_active = not task.is_active
         task.save()
@@ -101,10 +95,10 @@ def toggle_task_active(request, desk_slug, task_id):
 # CATEGORY VIEWS #
 #----------------#
 
+@get_desk
 @login_required
-def manage_categories(request, desk_slug):
+def manage_categories(request, desk):
     """Manage categories for a specific desk"""
-    desk = get_desk_by_slug(desk_slug, request.user)
     categories = Category.objects.filter(desk=desk)
     category_form = CategoryForm()  # Add this line to create a form instance
     
@@ -117,10 +111,10 @@ def manage_categories(request, desk_slug):
     })
 
 
+@get_desk
 @login_required
-def add_category(request, desk_slug):
+def add_category(request, desk):
     """Add a category to a specific desk using CategoryForm"""
-    desk = get_desk_by_slug(desk_slug, request.user)
     
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -129,28 +123,26 @@ def add_category(request, desk_slug):
             category.desk = desk
             category.save()
             messages.success(request, f"Category '{category.title}' created successfully.")
-            return redirect('categories_manage', desk_slug=desk_slug)
+            return redirect('categories_manage', desk=desk)
         else:
             # If the form is not valid, redirect to manage page with errors
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-            return redirect('categories_manage', desk_slug=desk_slug)
+            return redirect('categories_manage', desk=desk)
 
     # Redirect to categories_manage for GET requests - you don't need a separate page
-    return redirect('categories_manage', desk_slug=desk_slug)
+    return redirect('categories_manage', desk=desk)
 
-
+@get_desk
 @login_required
-def delete_category(request, desk_slug, category_id):
+def delete_category(request, desk, category_id):
     """Delete a category from a specific desk"""
-    desk = get_desk_by_slug(desk_slug, request.user)
-    # Ensure category belongs to this desk
     category = get_object_or_404(Category, id=category_id, desk=desk)
     category_title = category.title
     category.delete()
     messages.success(request, f"Category '{category_title}' deleted successfully.")
-    return redirect('categories_manage', desk_slug=desk_slug)
+    return redirect('categories_manage', desk=desk)
 
 #---------------#
 # PROFILE VIEWS #

@@ -20,6 +20,9 @@
     --color-button-inactive: #818181;
     --color-list-item-background: #ffffff;
     --color-list-item-text: #2c2c2c;
+    --color-dropdown-divider: rgba(0, 0, 0, 0.05);
+    --color-hover-overlay: rgba(255, 255, 255, 0.1);
+    --color-primary-shadow: rgba(255, 102, 0, 0.1);
     
     /* Desk Card Colors */
     --color-desk-background: #333333;
@@ -52,4 +55,8 @@
     --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.2);
     --transition-fast: 0.1s ease;
     --transition-normal: 0.2s ease;
+    --profile-icon-size: 32px;
+    --dropdown-width: 180px;
+    --username-max-width: 150px;
+    --z-dropdown: 1000;
 }
