@@ -1,5 +1,4 @@
 from functools import wraps
-from django.shortcuts import get_object_or_404
 from django.http import Http404
 from .utils import get_desk_by_slug
 

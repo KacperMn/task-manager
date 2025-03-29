@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .utils import get_desk_by_slug
+from .utils import toggle_task_status
 from .models import Task, Category, UserProfile
 from .forms import TaskForm, CategoryForm
 from .decorators import get_desk
@@ -56,7 +56,7 @@ def add_task(request, desk):
             task = form.save(commit=False)
             task.save()
             messages.success(request, f"Task '{task.title}' created successfully.")
-            return redirect('tasks_manage', desk=desk)
+            return redirect('tasks_manage', desk_slug=desk.slug)
     else:
         form = TaskForm(desk=desk)
         
@@ -73,21 +73,18 @@ def delete_task(request, desk, task_id):
     task_title = task.title
     task.delete()
     messages.success(request, f"Task '{task_title}' deleted successfully.")
-    return redirect('tasks_manage', desk=desk)
+    return redirect('tasks_manage', desk_slug=desk.slug)
 
 @get_desk
 @login_required
-def toggle_task_active(request, desk, task_id):
+def toggle_task_status_manual(request, desk, task_id):
     """Toggle a task's active status on a specific desk"""
     if request.method == 'POST':
-        task = get_object_or_404(Task, id=task_id, category__desk=desk)
-        task.is_active = not task.is_active
-        task.save()
-        status = "completed" if not task.is_active else "active"
+        result = toggle_task_status(task_id, desk)
         return JsonResponse({
             'success': True, 
-            'is_active': task.is_active,
-            'message': f"Task marked as {status}."
+            'is_active': result['is_active'],
+            'message': f"Task marked as {result['status']}."
         })
     return JsonResponse({'success': False}, status=400)
 
@@ -123,16 +120,16 @@ def add_category(request, desk):
             category.desk = desk
             category.save()
             messages.success(request, f"Category '{category.title}' created successfully.")
-            return redirect('categories_manage', desk=desk)
+            return redirect('categories_manage', desk_slug=desk.slug)
         else:
             # If the form is not valid, redirect to manage page with errors
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-            return redirect('categories_manage', desk=desk)
+            return redirect('categories_manage', desk_slug=desk.slug)
 
     # Redirect to categories_manage for GET requests - you don't need a separate page
-    return redirect('categories_manage', desk=desk)
+    return redirect('categories_manage', desk_slug=desk.slug)
 
 @get_desk
 @login_required
@@ -142,7 +139,7 @@ def delete_category(request, desk, category_id):
     category_title = category.title
     category.delete()
     messages.success(request, f"Category '{category_title}' deleted successfully.")
-    return redirect('categories_manage', desk=desk)
+    return redirect('categories_manage', desk_slug=desk.slug)
 
 #---------------#
 # PROFILE VIEWS #

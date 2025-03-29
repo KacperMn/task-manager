@@ -10,7 +10,7 @@ urlpatterns = [
     path('<slug:desk_slug>/manage-tasks/', views.manage_tasks, name='tasks_manage'),
     path('<slug:desk_slug>/add-task/', views.add_task, name='tasks_add'),
     path('<slug:desk_slug>/delete-task/<int:task_id>/', views.delete_task, name='tasks_delete'),
-    path('<slug:desk_slug>/toggle-task-active/<int:task_id>/', views.toggle_task_active, name='tasks_toggle'),
+    path('<slug:desk_slug>/toggle-task-status/<int:task_id>/', views.toggle_task_status_manual, name='tasks_toggle'),
 
     # Category-related URLs with desk slug
     path('<slug:desk_slug>/manage-categories/', views.manage_categories, name='categories_manage'),

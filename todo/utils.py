@@ -14,3 +14,28 @@ def get_desk_by_slug(slug, user):
     
     desk = get_object_or_404(Desk, desk_query)
     return desk
+
+def toggle_task_status(task_id, desk):
+    """
+    Toggle a task's active status
+    
+    Args:
+        task_id: ID of the task to toggle
+        desk: The desk object the task belongs to
+        
+    Returns:
+        dict: Dictionary containing the updated task and status information
+    """
+    from .models import Task
+    from django.shortcuts import get_object_or_404
+    
+    task = get_object_or_404(Task, id=task_id, category__desk=desk)
+    task.is_active = not task.is_active
+    task.save()
+    status = "completed" if not task.is_active else "active"
+    
+    return {
+        'task': task,
+        'is_active': task.is_active,
+        'status': status
+    }
