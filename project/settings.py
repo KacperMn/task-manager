@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'todo',
     'accounts',
     'desks',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -139,3 +140,15 @@ LOGIN_REDIRECT_URL = '/'
 
 # Redirect after logout
 LOGOUT_REDIRECT_URL = '/'
+
+# Django Q cluster settings
+Q_CLUSTER = {
+    'name': 'DjangoQ',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 60,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+}

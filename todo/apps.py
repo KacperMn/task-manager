@@ -6,3 +6,6 @@ class TodoConfig(AppConfig):
 
     def ready(self):
         import todo.signals  # Import the signals module
+        from todo.tasks import schedule_activate_scheduled_tasks
+        schedule_activate_scheduled_tasks()
+
