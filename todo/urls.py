@@ -21,9 +21,9 @@ urlpatterns = [
     path('user/profile/', views.profile, name='user_profile'),
 
     # Schedule management
-    path('<slug:desk_slug>/templates/create/', views.create_template, name='create_template'),
-    path('<slug:desk_slug>/templates/apply/', views.apply_template, name='apply_template'),
-    path('<slug:desk_slug>/trigger/<int:trigger_id>/remove/', views.remove_trigger, name='remove_trigger'),
-    path('<slug:desk_slug>/task/<int:task_id>/schedule/<int:schedule_id>/remove/', views.remove_schedule, name='remove_schedule'),
-    path('<slug:desk_slug>/templates/<int:template_id>/delete/', views.delete_template, name='delete_template'),
+    path('<slug:desk_slug>/schedules/create/', views.create_template, name='create_template'),
+    path('<slug:desk_slug>/schedules/apply/', views.apply_template, name='apply_template'),
+    path('<slug:desk_slug>/schedules/<int:trigger_id>/remove/', views.remove_trigger, name='remove_trigger'),
+    path('<slug:desk_slug>/schedules/<int:task_id>/schedule/<int:schedule_id>/remove/', views.remove_schedule, name='remove_schedule'),
+    path('<slug:desk_slug>/schedules/<int:template_id>/delete/', views.delete_template, name='delete_template'),
 ]

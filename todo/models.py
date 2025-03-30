@@ -63,6 +63,9 @@ class TriggerMoment(models.Model):
     time = models.TimeField()
     
     class Meta:
+        indexes = [
+            models.Index(fields=['day_of_week', 'time']),  # Add index for frequent queries
+        ]
         unique_together = ['template', 'day_of_week', 'time']
         
     def __str__(self):
@@ -76,4 +79,3 @@ class TaskSchedule(models.Model):
     
     class Meta:
         unique_together = ['task', 'template']
-

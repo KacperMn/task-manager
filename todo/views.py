@@ -4,6 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+from django.db import transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .utils import toggle_task_status, apply_schedule_to_task, remove_schedule_from_task
 from .models import Task, Category, UserProfile, ScheduleTemplate, TriggerMoment, TaskSchedule
@@ -26,22 +30,9 @@ def manage_tasks(request, desk):
     """View to manage tasks for a specific desk"""
     tasks = Task.objects.filter(category__desk=desk).select_related('category').prefetch_related('schedules__template')
     categories = Category.objects.filter(desk=desk)
-    schedule_templates = ScheduleTemplate.objects.filter(desk=desk)
     
-    # Current template being worked on
-    current_template = None
-    triggers = []
-    
-    # If we're editing a template, get its triggers
-    template_id = request.session.get('current_template_id')
-    if template_id:
-        try:
-            current_template = ScheduleTemplate.objects.get(id=template_id, desk=desk)
-            triggers = TriggerMoment.objects.filter(template=current_template)
-        except ScheduleTemplate.DoesNotExist:
-            # Clear invalid template ID
-            if 'current_template_id' in request.session:
-                del request.session['current_template_id']
+    # Use prefetch_related to ensure triggers are loaded efficiently
+    schedule_templates = ScheduleTemplate.objects.filter(desk=desk).prefetch_related('triggers')
     
     context = {
         'desk': desk,
@@ -50,8 +41,6 @@ def manage_tasks(request, desk):
         'schedule_templates': schedule_templates,
         'days_of_week': TriggerMoment.DAYS_OF_WEEK,
         'TIME_ZONE': settings.TIME_ZONE,
-        'current_template': current_template,
-        'triggers': triggers,
         'show_navbar': True,
         'show_footer': True
     }
@@ -62,60 +51,41 @@ def manage_tasks(request, desk):
 @require_http_methods(["POST"])
 def create_template(request, desk):
     """Create or update schedule template"""
-    
-    # Handle adding a trigger to a template
-    if 'add_trigger' in request.POST:
-        day = request.POST.get('day')
-        time = request.POST.get('time')
+    with transaction.atomic():
+        template_name = request.POST.get('name', '').strip()
         
-        template_id = request.session.get('current_template_id')
+        if not template_name:
+            messages.error(request, "Template name is required")
+            return redirect('tasks_manage', desk_slug=desk.slug)
         
-        # If no template exists or stored template doesn't exist, create one
-        if not template_id or not ScheduleTemplate.objects.filter(id=template_id, desk=desk).exists():
-            template_name = request.POST.get('name')
-            if not template_name:
-                # Need a name to create a new template
-                return redirect('tasks_manage', desk_slug=desk.slug)
-                
-            template = ScheduleTemplate.objects.create(
-                name=template_name,
-                user=request.user,
-                desk=desk
-            )
-            request.session['current_template_id'] = template.id
-        else:
-            template = ScheduleTemplate.objects.get(id=template_id)
+        # Create the template
+        template = ScheduleTemplate.objects.create(
+            name=template_name,
+            user=request.user,
+            desk=desk
+        )
         
-        # Add the trigger
-        if day and time:
-            TriggerMoment.objects.create(
-                template=template,
-                day_of_week=day,
-                time=time
-            )
+        # Process all trigger pairs (day and time)
+        days = request.POST.getlist('day[]')
+        times = request.POST.getlist('time[]')
         
-        return redirect('tasks_manage', desk_slug=desk.slug)
-    
-    # Handle saving the template (finish editing)
-    elif 'save_template' in request.POST:
-        template_id = request.session.get('current_template_id')
+        # Create a trigger for each day/time pair
+        triggers_created = 0
+        for day, time in zip(days, times):
+            if day and time:  # Only if both are provided
+                try:
+                    TriggerMoment.objects.create(
+                        template=template,
+                        day_of_week=int(day),
+                        time=time
+                    )
+                    triggers_created += 1
+                except Exception as e:
+                    logger.error(f"Error creating trigger: {str(e)}")
         
-        # If there's no current template, create one
-        if not template_id or not ScheduleTemplate.objects.filter(id=template_id, desk=desk).exists():
-            name = request.POST.get('name')
-            if name:
-                ScheduleTemplate.objects.create(
-                    name=name,
-                    user=request.user,
-                    desk=desk
-                )
+        message = f"Template '{template_name}' created with {triggers_created} trigger(s)"
+        messages.success(request, message)
         
-        # Clear the session
-        if 'current_template_id' in request.session:
-            del request.session['current_template_id']
-        
-        return redirect('tasks_manage', desk_slug=desk.slug)
-    
     return redirect('tasks_manage', desk_slug=desk.slug)
 
 @get_desk
@@ -185,20 +155,78 @@ def desk_view(request, desk):
 @get_desk
 @login_required
 def add_task(request, desk):
-    
     if request.method == 'POST':
         form = TaskForm(desk=desk, data=request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.save()
+            
+            # Process selected templates
+            selected_templates = request.POST.get('selected_templates', '')
+            if selected_templates:
+                for template_id in selected_templates.split(','):
+                    try:
+                        template = ScheduleTemplate.objects.get(id=template_id, desk=desk)
+                        # Use your existing function to apply schedule
+                        apply_schedule_to_task(task, template)
+                    except ScheduleTemplate.DoesNotExist:
+                        pass
+                        
             messages.success(request, f"Task '{task.title}' created successfully.")
             return redirect('tasks_manage', desk_slug=desk.slug)
     else:
         form = TaskForm(desk=desk)
         
+    # Get available templates for this desk
+    schedule_templates = ScheduleTemplate.objects.filter(desk=desk)
+    
     return render(request, 'desk/add_task.html', {
         'form': form,
         'desk': desk,
+        'schedule_templates': schedule_templates,
+    })
+
+@get_desk
+@login_required
+def edit_task(request, desk, task_id):
+    task = get_object_or_404(Task, id=task_id, category__desk=desk)
+    
+    if request.method == 'POST':
+        form = TaskForm(desk=desk, data=request.POST, instance=task)
+        if form.is_valid():
+            task = form.save()
+            
+            # First, deactivate all existing schedules
+            TaskSchedule.objects.filter(task=task).update(is_active=False)
+            
+            # Apply newly selected templates
+            selected_templates = request.POST.get('selected_templates', '')
+            if selected_templates:
+                for template_id in selected_templates.split(','):
+                    try:
+                        template = ScheduleTemplate.objects.get(id=template_id, desk=desk)
+                        apply_schedule_to_task(task, template)
+                    except ScheduleTemplate.DoesNotExist:
+                        pass
+                        
+            messages.success(request, f"Task '{task.title}' updated successfully.")
+            return redirect('tasks_manage', desk_slug=desk.slug)
+    else:
+        form = TaskForm(desk=desk, instance=task)
+        
+    # Get all templates and mark those that are applied
+    schedule_templates = ScheduleTemplate.objects.filter(desk=desk)
+    applied_template_ids = list(TaskSchedule.objects.filter(
+        task=task, 
+        is_active=True
+    ).values_list('template_id', flat=True))
+    
+    return render(request, 'desk/edit_task.html', {
+        'form': form,
+        'task': task,
+        'desk': desk,
+        'schedule_templates': schedule_templates,
+        'applied_template_ids': applied_template_ids,
     })
 
 @get_desk
