@@ -14,20 +14,21 @@
             <ul class="desks-grid">
             {% for desk in desks %}
                 <li class="desk-square">
-                    <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="desk-link">
-                        <div class="desk-image-placeholder">
-                            <!-- Placeholder for future image -->
-                            <div class="desk-placeholder-icon"></div>
-                        </div>
-                        <div class="desk-name">{{ desk.name }}</div>
-                        <div class="desk-actions">
-                            {% if desk.user == request.user %}
-                            <a href="{% url 'desks_edit' desk_id=desk.id %}" class="btn btn-secondary">
-                                <i class="fas fa-edit"></i> Edit & Share
+                    <div class="desk-content">
+                        <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="desk-link">
+                            <div class="desk-image-placeholder">
+                                <!-- Placeholder for future image -->
+                                <div class="desk-placeholder-icon"></div>
+                            </div>
+                            <div class="desk-name">{{ desk.name }}</div>
+                        </a>
+                        
+                        {% if desk.user == request.user %}
+                            <a href="{% url 'desks_edit' desk_id=desk.id %}" class="gear-icon" title="Edit & Share">
+                                <i class="fas fa-cog"></i>
                             </a>
-                            {% endif %}
-                        </div>
-                    </a>
+                        {% endif %}
+                    </div>
                 </li>
             {% endfor %}
                 <!-- Update the create desk button -->

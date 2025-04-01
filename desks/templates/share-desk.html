@@ -8,42 +8,43 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="h2 mb-4">Share "{{ desk.name }}" Desk</h1>
+<div class="share-desk-container">
+    <div class="share-desk-wrapper">
+        <!-- Header with Back button -->
+        <div class="share-desk-header">
+            <a href="{% url 'desks_edit' desk_id=desk.id %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <h2 class="share-desk-title">Share "{{ desk.name }}" Desk</h2>
+            <div class="spacer"></div> <!-- Empty div for flex spacing -->
+        </div>
 
-    <div class="row">
-        <!-- Share Link Section -->
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="h5 mb-0">Share Link</h2>
-                </div>
-                <div class="card-body">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="share-url" value="{{ share_url }}" readonly>
-                        <button class="btn btn-outline-primary" type="button" id="copy-button">
+        <div class="share-desk-content">
+            <!-- Share Link Section -->
+            <div class="share-panel">
+                <h3 class="panel-title">Share Link</h3>
+                <div class="panel-content">
+                    <div class="share-url-container">
+                        <input type="text" class="share-url-input" id="share-url" value="{{ share_url }}" readonly>
+                        <button class="btn-copy" id="copy-button">
                             <i class="fas fa-copy"></i> Copy
                         </button>
                     </div>
                     
-                    <div class="text-center">
+                    <div class="qr-code-container">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ share_url|urlencode }}" 
-                             alt="QR Code" class="img-fluid border rounded" style="max-width: 200px;">
+                             alt="QR Code" class="qr-code">
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Users and Permissions Section -->
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="h5 mb-0">Users with Access</h2>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
+            
+            <!-- Users and Permissions Section -->
+            <div class="share-panel">
+                <h3 class="panel-title">Users with Access</h3>
+                <div class="panel-content">
+                    <div class="users-table-container">
+                        <table class="users-table">
+                            <thead>
                                 <tr>
                                     <th>User</th>
                                     <th>Permission</th>
@@ -56,7 +57,7 @@
                                     <td>
                                         <strong>{{ desk.user.username }}</strong> (You)
                                     </td>
-                                    <td><span class="badge bg-danger">Owner</span></td>
+                                    <td><span class="badge owner-badge">Owner</span></td>
                                     <td>-</td>
                                 </tr>
                                 
@@ -68,7 +69,7 @@
                                         <form method="post" action="{% url 'update_user_permission' desk_id=desk.id user_id=share.user.id %}" 
                                               id="permission-form-{{ share.user.id }}">
                                             {% csrf_token %}
-                                            <select name="permission" class="form-select form-select-sm" 
+                                            <select name="permission" class="permission-select" 
                                                    data-user-id="{{ share.user.id }}"
                                                    data-username="{{ share.user.username }}">
                                                 <option value="view" {% if share.permission == 'view' %}selected{% endif %}>View Only</option>
@@ -77,9 +78,9 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <form method="post" action="{% url 'remove_shared_user' desk_id=desk.id user_id=share.user.id %}" class="d-inline">
+                                        <form method="post" action="{% url 'remove_shared_user' desk_id=desk.id user_id=share.user.id %}">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-danger remove-user-btn">
+                                            <button type="submit" class="btn-remove">
                                                 Remove
                                             </button>
                                         </form>
@@ -87,7 +88,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="3" class="text-center p-3">
+                                    <td colspan="3" class="no-users-message">
                                         No users have been added yet
                                     </td>
                                 </tr>
@@ -98,25 +99,17 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Action buttons -->
-    <div class="d-flex justify-content-between">
-        <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn btn-primary">
-            Go to Desk
-        </a>
-        <a href="{% url 'desks_edit' desk_id=desk.id %}" class="btn btn-secondary">
-            Back to Edit Page
-        </a>
-    </div>
-
-    <!-- Additional Information -->
-    <div class="mt-4">
-        {% for share in desk.user_shares.all %}
-            {{ share.user.username }} - {{ share.get_permission_display }}
-        {% endfor %}
+        
+        <!-- Action button -->
+        <div class="share-desk-actions">
+            <a href="{% url 'tasks_list' desk_slug=desk.slug %}" class="btn-primary">
+                Go to Desk
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}
 
-{% block extra_js %}<script src="{% static 'js/share-desk.js' %}" defer></script>{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/share-desk.js' %}" defer></script>
+{% endblock %}

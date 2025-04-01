@@ -2,16 +2,18 @@
    TABLE OF CONTENTS
    ====================================
    1. Containers and Layout
-   2. Tables
+   2. Tables and Data Display
    3. Buttons and Interactive Elements
    4. Task Lists
-   5. States and Modifiers
+   5. States and Animations
+   6. Schedule Components
    ==================================== */
 
 /* 1. Containers and Layout
    ==================================== */
 .manage-container {
     width: 100%;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     padding: var(--spacing-md);
 }
@@ -29,8 +31,13 @@
     overflow: hidden;
 }
 
-.active-tasks {
+.active-tasks,
+.inactive-tasks {
     margin-bottom: var(--spacing-lg);
+    position: relative;
+}
+
+.active-tasks {
     flex: 1;
     overflow: hidden;
 }
@@ -43,26 +50,24 @@
     background-color: var(--color-background);
 }
 
-/* 2. Tables
+/* 2. Tables and Data Display
    ==================================== */
 .manage-table,
 .tasks-table {
     width: 100%;
     border-collapse: collapse;
-}
-
-.manage-table {
     margin-top: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
-}
-
-.tasks-table {
-    margin-top: var(--spacing-lg);
 }
 
 .manage-row,
 .task-row {
     border-bottom: 1px solid var(--color-form-border);
+}
+
+.manage-row.completed {
+    opacity: 0.7;
+    background-color: var(--color-background-tertiary);
 }
 
 .manage-cell,
@@ -77,37 +82,65 @@
     background-color: var(--color-background);
 }
 
-.task-actions {
+.task-actions,
+.manage-actions {
     text-align: center;
     white-space: nowrap;
-}
-
-/* 3. Buttons and Interactive Elements
-   ==================================== */
-.manage-button {
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--color-primary);
-    color: var(--color-text);
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color var(--transition-normal), transform var(--transition-fast);
-}
-
-.manage-button:hover {
-    background-color: var(--color-primary-hover);
-    transform: translateY(-2px);
-}
-
-.manage-actions {
     display: flex;
     justify-content: flex-end;
     gap: var(--spacing-sm);
 }
 
+.manage-empty-message {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* 3. Buttons and Interactive Elements
+   ==================================== */
+.manage-button,
+.schedule-button,
+.btn-action {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-normal), 
+                transform var(--transition-fast);
+}
+
+.manage-button:hover,
+.schedule-button:hover,
+.btn-action:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+}
+
+.manage-button:active,
+.schedule-button:active,
+.btn-action:active {
+    transform: scale(0.98);
+}
+
+.manage-button.delete,
+.btn-remove,
+.btn-delete {
+    background-color: var(--color-danger);
+}
+
+.manage-button.delete:hover,
+.btn-remove:hover,
+.btn-delete:hover {
+    background-color: var(--color-danger-hover);
+}
+
 .manage-back-link {
     background-color: var(--color-secondary);
-    color: var(--color-text);
+    color: white;
     display: inline-block;
     margin-top: var(--spacing-md);
     text-decoration: none;
@@ -131,7 +164,9 @@
     cursor: pointer;
     text-align: left;
     box-shadow: var(--shadow-light);
-    transition: background-color var(--transition-normal), transform var(--transition-fast);
+    transition: background-color var(--transition-normal), 
+                transform var(--transition-fast),
+                box-shadow var(--transition-normal);
 }
 
 .list-btn:hover {
@@ -150,48 +185,6 @@
     margin-left: var(--spacing-sm);
 }
 
-/* 4. Task Lists
-   ==================================== */
-.task-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    overflow: visible;
-}
-
-.task-list li {
-    margin-bottom: var(--spacing-sm);
-    overflow: visible;
-    padding: 1px;
-}
-
-.task-list-horizontal {
-    display: inline-flex;
-    gap: var(--spacing-sm);
-    padding: 0;
-    margin: 0;
-}
-
-.task-list-horizontal li {
-    flex-shrink: 0;
-    width: auto;
-}
-
-/* 5. States and Modifiers
-   ==================================== */
-.manage-row.completed {
-    opacity: 0.7;
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.manage-button.delete {
-    background-color: var(--color-danger);
-}
-
-.manage-button.delete:hover {
-    background-color: var(--color-danger-hover);
-}
-
 .list-btn.active {
     background-color: var(--color-button-active);
     color: var(--color-form-text);
@@ -204,4 +197,326 @@
 
 .list-btn.inactive .list-btn-icon {
     color: var(--color-text-muted);
+}
+
+/* 4. Task Lists
+   ==================================== */
+.task-list,
+.task-list-horizontal {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-list {
+    overflow: visible;
+}
+
+.task-list li {
+    margin-bottom: var(--spacing-sm);
+    overflow: visible;
+    padding: 1px;
+}
+
+.task-list-horizontal {
+    display: inline-flex;
+    gap: var(--spacing-sm);
+}
+
+.task-list-horizontal li {
+    flex-shrink: 0;
+    width: auto;
+}
+
+/* 5. States and Animations
+   ==================================== */
+@keyframes taskUpdated {
+    0% { transform: translateY(0); }
+    25% { transform: translateY(-5px); }
+    50% { background-color: var(--color-highlight); }
+    75% { transform: translateY(0); }
+    100% { background-color: transparent; }
+}
+
+.task-updated {
+    animation: taskUpdated 1.5s ease;
+}
+
+/* 6. Schedule Components
+   ==================================== */
+.schedule-sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+}
+
+.schedule-section {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+/* Header styling */
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    background-color: var(--color-header-footer);
+    font-weight: var(--font-weight-medium);
+    border: 1px solid var(--color-form-border);
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-normal);
+}
+
+.collapsible-header:hover {
+    background-color: var(--color-hover-overlay);
+}
+
+.collapsible-header .toggle-icon {
+    transition: transform var(--transition-fast);
+    font-style: normal;
+}
+
+.collapsible-header[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Content styling */
+.schedule-content {
+    padding: var(--spacing-md);
+    background-color: var(--color-background);
+    border: 1px solid var(--color-form-border);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+/* Form styling */
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-form-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.form-error {
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+}
+
+/* Moments section */
+.moments-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.moments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.moments-header h5 {
+    font-size: var(--font-size-md);
+    margin: 0;
+}
+
+.btn-add-moment {
+    background-color: var(--color-success);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: background-color var(--transition-normal);
+}
+
+.btn-add-moment:hover {
+    background-color: var(--color-success-hover);
+}
+
+/* Moment items */
+.moment-item {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-form-border);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-light);
+}
+
+.moment-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.moment-fields {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.moment-field {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Submit and action buttons */
+.btn-submit,
+.btn-confirm {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xs) var(--spacing-md);
+    cursor: pointer;
+    font-size: var(--font-size-md);
+    transition: background-color var(--transition-normal), transform var(--transition-fast);
+}
+
+.btn-submit:hover,
+.btn-confirm:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-submit:active,
+.btn-confirm:active {
+    transform: scale(0.98);
+}
+
+/* Button container */
+.form-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    justify-content: center;
+}
+
+/* Schedule items */
+.schedule-item {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-form-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    transition: box-shadow var(--transition-normal);
+    margin-bottom: var(--spacing-sm);
+}
+
+.schedule-item:hover {
+    box-shadow: var(--shadow-medium);
+}
+
+.schedule-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.schedule-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.schedule-title {
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-xs);
+}
+
+.schedule-moments {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.schedule-moments li {
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.schedule-moments .day {
+    display: inline-block;
+    width: 80px;
+    font-weight: var(--font-weight-medium);
+}
+
+.no-schedules {
+    font-style: italic;
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: var(--spacing-md) 0;
+}
+
+/* Edit schedule form */
+.edit-schedule-form {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-background-secondary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-form-border);
+}
+
+.btn-cancel {
+    background-color: var(--color-secondary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xs) var(--spacing-md);
+    cursor: pointer;
+    font-size: var(--font-size-md);
+    transition: background-color var(--transition-normal);
+}
+
+.btn-cancel:hover {
+    background-color: var(--color-secondary-hover);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .moment-fields {
+        flex-direction: column;
+    }
+    
+    .moment-field {
+        min-width: 100%;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 500px) {
+    .schedule-moments .day {
+        width: 60px;
+    }
+    
+    .collapsible-header {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .schedule-content {
+        padding: var(--spacing-sm);
+    }
 }

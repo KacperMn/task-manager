@@ -1,35 +1,53 @@
 :root {
-    /* Color System */
+    /* ===== Color System ===== */
+    /* Primary colors */
     --color-primary: #ff6600;
     --color-primary-hover: #e65c00;
+    --color-primary-light: rgba(255, 102, 0, 0.1);
+    --color-primary-shadow: rgba(255, 102, 0, 0.1);
+    
+    /* Status colors */
+    --color-success: #28a745;
+    --color-success-hover: #218838;
     --color-danger: #e53935;
     --color-danger-hover: #c82333;
+    --color-warning: #ffc107;
+    --color-warning-hover: #e0a800;
     --color-secondary: #6c757d;
     --color-secondary-hover: #5a6268;
+    --color-highlight: #e6f7ff;
     
-    /* UI Colors */
+    /* Structural colors */
     --color-background: #2c2c2c;
+    --color-background-secondary: #ffffff;
+    --color-background-tertiary: #f5f5f5;
+    --color-background-tertiary-hover: #e8e8e8;
     --color-header-footer: #1f1f1f;
+    
+    /* Text colors */
     --color-text: #ffffff;
+    --color-text-secondary: #555;
     --color-text-muted: #aaaaaa;
-    --color-form-background: #ffffff;
     --color-form-text: #2c2c2c;
     --color-form-text-muted: #666;
+    
+    /* UI element colors */
     --color-form-border: #555;
+    --color-form-background: #ffffff;
     --color-button-active: #ffffff;
     --color-button-inactive: #818181;
     --color-list-item-background: #ffffff;
     --color-list-item-text: #2c2c2c;
     --color-dropdown-divider: rgba(0, 0, 0, 0.05);
     --color-hover-overlay: rgba(255, 255, 255, 0.1);
-    --color-primary-shadow: rgba(255, 102, 0, 0.1);
+    --color-border: #ddd;
     
     /* Desk Card Colors */
     --color-desk-background: #333333;
     --color-desk-image: #424242;
     --color-desk-name: #212121;
 
-    /* Typography */
+    /* ===== Typography ===== */
     --font-family: 'Segoe UI', Arial, sans-serif;
     --font-size-xs: 12px;
     --font-size-sm: 14px;
@@ -42,21 +60,40 @@
     --font-weight-bold: 600;
     --line-height: 1.5;
 
-    /* Spacing */
-    --spacing-xs: 5px;
-    --spacing-sm: 10px;
-    --spacing-md: 15px;
-    --spacing-lg: 20px;
-    --spacing-xl: 30px;
+    /* ===== Spacing ===== */
+    --spacing-xxs: 4px;
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
     
-    /* UI Properties */
+    /* ===== UI Properties ===== */
     --border-radius: 5px;
-    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --border-radius-lg: 8px;
+    --border-radius-circle: 50%;
+    
+    /* Shadows */
+    --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.1);
     --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.2);
+    --shadow-form: 0 0 0 2px var(--color-primary-shadow);
+    
+    /* Transitions */
     --transition-fast: 0.1s ease;
     --transition-normal: 0.2s ease;
+    --transition-slow: 0.3s ease;
+    
+    /* Component sizes */
     --profile-icon-size: 32px;
     --dropdown-width: 180px;
     --username-max-width: 150px;
+    --container-max-width: 1200px;
+    --form-max-width: 500px;
+    
+    /* Z-index layers */
     --z-dropdown: 1000;
+    --z-modal: 2000;
+    --z-tooltip: 1500;
+    --z-notification: 3000;
 }

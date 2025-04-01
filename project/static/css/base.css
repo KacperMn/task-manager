@@ -1,16 +1,16 @@
 /* ====================================
    TABLE OF CONTENTS
    ====================================
-   2. Base Elements
-   3. Layout Components
-   4. Form Elements
-   5. Buttons
-   6. Navigation & Header
-   7. Messages & Notifications
-   8. Responsive Adjustments
+   1. Reset & Base Elements
+   2. Layout Components
+   3. Form Elements
+   4. Buttons
+   5. Navigation & Header
+   6. Messages & Notifications
+   7. Responsive Adjustments
    ==================================== */
 
-/* 2. Base Elements
+/* 1. Reset & Base Elements
    ==================================== */
 * {
     box-sizing: border-box;
@@ -47,7 +47,6 @@ footer {
     color: var(--color-text);
     text-align: center;
     padding: var(--spacing-sm) 0;
-    position: static;
     width: 100%;
 }
 
@@ -55,6 +54,10 @@ a {
     color: var(--color-primary);
     text-decoration: none;
     transition: var(--transition-normal);
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -66,8 +69,15 @@ ul, ol {
     list-style: none;
 }
 
-/* 3. Layout Components
+/* 2. Layout Components
    ==================================== */
+.container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: var(--spacing-md);
+}
+
 .text-link {
     color: var(--color-primary);
     text-decoration: none;
@@ -91,7 +101,21 @@ ul, ol {
     font-style: italic;
 }
 
-/* 4. Form Elements
+.card {
+    background-color: var(--color-background-secondary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+/* 3. Form Elements
    ==================================== */
 .form-field {
     display: flex;
@@ -113,7 +137,7 @@ ul, ol {
 .category-input,
 .manage-input, 
 .manage-select {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-sm);
     border: 1px solid var(--color-form-border);
     border-radius: var(--border-radius);
     font-size: var(--font-size-md);
@@ -131,16 +155,16 @@ ul, ol {
 .manage-select:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-primary-shadow);
+    box-shadow: var(--shadow-form);
 }
 
 .field-error {
     color: var(--color-danger);
     font-size: var(--font-size-sm);
-    margin-top: 4px;
+    margin-top: var(--spacing-xxs);
 }
 
-/* 5. Buttons
+/* 4. Buttons
    ==================================== */
 .btn {
     display: inline-block;
@@ -190,7 +214,7 @@ ul, ol {
     background-color: var(--color-danger-hover);
 }
 
-/* 6. Navigation & Header
+/* 5. Navigation & Header
    ==================================== */
 .navbar {
     display: flex;
@@ -263,7 +287,7 @@ ul, ol {
 .profile-icon {
     width: var(--profile-icon-size);
     height: var(--profile-icon-size);
-    border-radius: 50%;
+    border-radius: var(--border-radius-circle);
     background-color: var(--color-primary);
     color: var(--color-text);
     display: flex;
@@ -316,10 +340,6 @@ ul, ol {
     text-align: left;
 }
 
-.dropdown-menu form:hover .dropdown-logout {
-    color: var(--color-form-text);
-}
-
 .dropdown:hover .dropdown-menu {
     display: block;
 }
@@ -330,13 +350,39 @@ ul, ol {
     border-bottom: 1px solid var(--color-dropdown-divider);
 }
 
-/* Remove unwanted styles */
-.logout-form,
-.logout-btn {
-    display: none; /* Hide the old logout button */
+/* Form actions */
+.form-actions {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
 }
 
-/* 8. Responsive Adjustments
+/* 6. Messages & Notifications
+   ==================================== */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all var(--transition-slow);
+    z-index: var(--z-notification);
+    color: white;
+}
+
+.notification.success {
+    background-color: var(--color-success);
+}
+
+.notification.error {
+    background-color: var(--color-danger);
+}
+
+/* 7. Responsive Adjustments
    ==================================== */
 @media (max-width: 768px) {
     .dropdown-username {
@@ -351,6 +397,10 @@ ul, ol {
         padding: var(--spacing-xs);
         margin: 0 2px;
     }
+    
+    .container {
+        padding: var(--spacing-xs);
+    }
 }
 
 @media (max-width: 600px) {
@@ -360,5 +410,9 @@ ul, ol {
     
     .navbar-brand {
         font-size: var(--font-size-lg);
+    }
+    
+    .form-actions {
+        flex-direction: column;
     }
 }

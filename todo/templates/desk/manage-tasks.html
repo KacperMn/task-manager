@@ -8,9 +8,21 @@
 {% endblock %}
 
 {% block content %}
+
+{% include 'desk/schedule-section.html' %}
+
 <div class="manage-container">
     <h2>Tasks</h2>
     <table class="manage-table">
+        <thead>
+            <tr>
+                <th class="manage-cell">Title</th>
+                <th class="manage-cell">Description</th>
+                <th class="manage-cell">Category</th>
+                <th class="manage-cell">Schedule</th>
+                <th class="manage-cell">Actions</th>
+            </tr>
+        </thead>
         <!-- Form for Adding a New Task -->
         <tr class="manage-row">
             <form method="post" action="{% url 'tasks_add' desk_slug=desk.slug %}">
@@ -28,6 +40,14 @@
                         {% endfor %}
                     </select>
                 </td>
+                <td class="manage-cell">
+                    <select name="schedule" class="manage-select">
+                        <option value="">No Schedule</option>
+                        {% for schedule in schedules %}
+                        <option value="{{ schedule.id }}">{{ schedule.title }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
                 <td class="manage-cell manage-actions">
                     <button type="submit" class="manage-button">Add Task</button>
                 </td>
@@ -41,6 +61,13 @@
             <td class="manage-cell">{{ task.description }}</td>
             <td class="manage-cell">{{ task.category.title }}</td>
             <td class="manage-cell">
+                {% if task.schedule %}
+                    {{ task.schedule.title }}
+                {% else %}
+                    No Schedule
+                {% endif %}
+            </td>
+            <td class="manage-cell">
                 <div class="manage-actions">
                     <form method="post" action="{% url 'tasks_delete' desk_slug=desk.slug task_id=task.id %}">
                         {% csrf_token %}
@@ -51,7 +78,7 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="4" class="manage-empty-message">No tasks found. Add some tasks.</td>
+            <td colspan="5" class="manage-empty-message">No tasks found. Add some tasks.</td>
         </tr>
         {% endfor %}
     </table>
